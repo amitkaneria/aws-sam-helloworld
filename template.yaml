@@ -17,7 +17,7 @@ Metadata:
     Author: Amit Kaneria
     SpdxLicenseId: Apache-2.0
     HomePageUrl: https://github.com/amitkaneria/awssam-helloworld
-    SemanticVersion: 0.0.2
+    SemanticVersion: 0.0.3
     SourceCodeUrl: https://github.com/amitkaneria/awssam-helloworld
 
 Resources:
