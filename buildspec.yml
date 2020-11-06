@@ -6,7 +6,7 @@ phases:
   build:
     commands:
       - sam package --template-file template.yaml --s3-bucket sam-deployment-11052020 --output-template-file packaged-template.yml
-      - sam deploy --template-file packaged-template.yml --stack-name helloworld-amit
+      - sam deploy --template-file packaged-template.yml --stack-name helloworld
       - sam publish --template packaged-template.yml
 artifacts:
   files:
