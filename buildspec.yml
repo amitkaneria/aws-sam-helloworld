@@ -7,7 +7,7 @@ phases:
     commands:
       - sam package --template-file template.yaml --s3-bucket sam-deployment-11052020 --output-template-file packaged-template.yml
       - aws cloudformation package --template template.yaml --s3-bucket sam-deployment-11052020 --output-template template-export-get.json
-      - sam deploy --template-file packaged-template.yml --stack-name python-hello-world-sam-application --capabilities CAPABILITY_IAM
+      - sam deploy --template-file packaged-template.yml --stack-name python-hello-world-sam-application --capabilities CAPABILITY_IAM --no-confirm-changeset
 artifacts:
   files:
     - packaged-template.yml
