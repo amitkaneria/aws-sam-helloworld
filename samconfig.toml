@@ -2,13 +2,14 @@ version = 0.1
 [default]
 [default.deploy]
 [default.deploy.parameters]
-stack_name = "helloworld-dev"
-s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-2cngss6c59btl"
-s3_prefix = "helloworld-test"
-region = "eu-central-1"
+stack_name = "helloworld-amit"
+s3_bucket = "sam-deployment-11052020"
+s3_prefix = "helloworld-amit"
+region = "us-east-1"
+profile = "amitkaneria"
 confirm_changeset = true
 capabilities = "CAPABILITY_IAM"
-profile = "takorun"
+parameter_overrides = "Environment=\"amit\""
 
 [production]
 [production.deploy]
