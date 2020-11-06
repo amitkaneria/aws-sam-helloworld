@@ -33,7 +33,7 @@ def lambda_handler(event, context):
 
     #     raise e
 
-    print("Hello World, version: 0.0.3")
+    print("Hello World, version: 0.0.4")
 
     return {
         "statusCode": 200,
