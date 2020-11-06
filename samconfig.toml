@@ -6,7 +6,6 @@ stack_name = "helloworld-amit"
 s3_bucket = "sam-deployment-11052020"
 s3_prefix = "helloworld-amit"
 region = "us-east-1"
-profile = "amitkaneria"
 confirm_changeset = true
 capabilities = "CAPABILITY_IAM"
 parameter_overrides = "Environment=\"amit\""
