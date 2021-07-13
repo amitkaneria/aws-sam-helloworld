@@ -3,15 +3,26 @@ import datetime
 from finance.project_gamma.alphavantage.api.api import process_price_volume_data_for, process_stochastic_data_for, process_ema8_data_for, process_ema12_data_for, process_ema200_data_for, update_price_volume_data_for, process_rsi_data_for
 from finance.project_gamma.alphavantage.util.util import is_valid_date
 
+
 def process_data_for(ticker, api_key, date):
+    print(str(datetime.datetime.now()) + ' : Processing '+ ticker)
     process_price_volume_data_for(ticker, api_key=API_KEY, date=date)
     process_stochastic_data_for(ticker, api_key=API_KEY, date=date)
     process_ema8_data_for(ticker, api_key=API_KEY, date=date)
     process_ema12_data_for(ticker, api_key=API_KEY, date=date)
-    process_ema200_data_for(ticker, api_key=API_KEY, date=date)
     print(str(datetime.datetime.now()) + ' : sleeping for 1 min')
-    time.sleep(60)
+    time.sleep(20)
+    process_ema200_data_for(ticker, api_key=API_KEY, date=date)
     process_rsi_data_for(ticker, api_key=API_KEY, date=date)
+
+
+def generate_signals_data():
+    process_ema_8_12_buy_signals()
+    process_ema_8_12_sell_signals()
+    process_stochastic_slow_buy_signals()
+    process_stochastic_slow_sell_signals()
+    process_rsi_buy_signals()
+    process_rsi_sell_signals()
 
 
 ticker_list_etf             = ['SPY', 'QQQ', 'DIA']
@@ -46,16 +57,13 @@ ticker_list_travel          = ['BA', 'UBER', 'LYFT', 'MAR', 'HLT', 'HGV', 'UAL',
 ticker_list_govt            = ['BAH', 'X']
 ticker_list_blockchain      = ['RIOT', 'MARA', 'SOS']
 
-ticker_list_new = []
+ticker_list_new = ['PEP', 'KO', 'FAST', 'C', 'BLK', 'INFY', 'PNC', 'TSM', 'UNH', 'MS', 'USB', 'TFC', 'BK', 'CTAS', 'AA', 'HDB', 'SCHW', 'ERIC', 'STT']
+ticker_list_new1 = ['UBS', 'CMG', 'LMT', 'TRV', 'IBKR', 'TER', 'PCAR', 'HAL', 'ALLY', 'CIT', 'JNJ', 'ANTM', 'VZ', 'CSX', 'EFX', 'NVS', 'TXN', 'WHR']
 
-ticker_list_new4 = ['ARKW', 'ARKX', 'BAH', 'CYBR', 'EBAY', 'FEYE', 'FUTU', 'JMIA', 'MA', 'OKTA', 'PINS', 'PLUG', 'QS', 'RIOT', 'MARA', 'SFIX', 'MU']
-ticker_list_new5 = ['SOS', 'SPOT', 'TRMB', 'TTD', 'V', 'WIX', 'X', 'PATH', 'XOM', 'GOTU', 'BILI', 'CARV', 'SAP', 'ORCL', 'MAR', 'HLT', 'HGV']
-ticker_list_new6 = ['WH', 'UAL', 'DAL', 'LUV', 'CCL', 'NCLH', 'EXPR', 'AXP', 'PETS']
-
+################################################################################
 API_KEY='XYF81MAS06D29A24'
 
-option=2
-# option=1
+option=1
 print('Select Options below:' + str(option))
 
 ticker_list = [ticker_list_etf, ticker_list_tech_bio, ticker_list_tech_fin, ticker_list_tech_mfg, ticker_list_tech_re, ticker_list_tech_chips,
@@ -73,14 +81,14 @@ if option == 1:
     for sub_ticker_list in ticker_list:
         for ticker in sub_ticker_list:
             process_data_for(ticker, api_key=API_KEY, date='2021-07-12')
-            time.sleep(60)
+            print(str(datetime.datetime.now()) + ' : sleeping for 1 min')
+            time.sleep(20)
 
 
 # use this for newly monitored ticker List ##  for Multiple Ticker list
 elif option == 2:
 
-    # ticker_list = [ticker_list_new]
-    ticker_list = [ticker_list_new4]
+    ticker_list = [ticker_list_new]
 
     for sub_ticker_list in ticker_list:
         for ticker in sub_ticker_list:
@@ -88,7 +96,8 @@ elif option == 2:
             # process_data_for(ticker, api_key=API_KEY, date='2021-07-09')
             # update_price_volume_data_for(ticker, api_key=API_KEY, date=date)
             process_rsi_data_for(ticker, api_key=API_KEY, date=None)
-            time.sleep(60)
+            # print(str(datetime.datetime.now()) + ' : sleeping for 1 min')
+            # time.sleep(60)
 
 
 else:

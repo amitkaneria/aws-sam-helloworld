@@ -102,9 +102,9 @@ def process_rsi_data_for(ticker, api_key, date=None):
 
     if is_valid_date(date):
         try:
-            update_daily_technicals_stochs(ticker, date, data[date]['SlowK'], data[date]['SlowD'], (float(data[date]['SlowK']) - float(data[date]['SlowD'])))
+            update_daily_technicals_rsi(ticker, date, data[date]['RSI'])
         except:
-            print(str(datetime.datetime.now()) + " : WARNING --- Ticker: " + ticker + " Date: " + date + " RSI data NOT FOUND!!!... Moving to the next one!!!")
+            print(str(datetime.datetime.now()) + " : WARNING --- Ticker: " + ticker + " Date: " + date + " RSI data(" + url + ") NOT FOUND!!!... Moving to the next one!!!")
 
     else:
         print(str(datetime.datetime.now()) + ' : ' + ticker + ' RSI data ... ')
