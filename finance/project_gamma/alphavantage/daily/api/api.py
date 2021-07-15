@@ -1,7 +1,7 @@
 import requests
 import datetime
-from finance.project_gamma.alphavantage.dao.dao import insert_daily_price_volume, insert_daily_technicals_stochs, update_daily_price_volume, update_daily_technicals_stochs, update_daily_technicals_ema, update_daily_technicals_rsi
-from finance.project_gamma.alphavantage.util.util import is_valid_date
+from finance.project_gamma.alphavantage.daily.dao.dao import insert_daily_price_volume, insert_daily_technicals_stochs, update_daily_price_volume, update_daily_technicals_stochs, update_daily_technicals_ema, update_daily_technicals_rsi
+from finance.project_gamma.alphavantage.daily.util.util import is_valid_date
 
 
 def process_price_volume_data_for(ticker, api_key, date):
@@ -12,14 +12,18 @@ def process_price_volume_data_for(ticker, api_key, date):
     response_data = r.json()
     data = response_data['Time Series (Daily)']
 
+    print(str(datetime.datetime.now()) + ' : . Price/Volume data')
     if is_valid_date(date):
         try:
-            insert_daily_price_volume(ticker, date, data[date]['1. open'], data[date]['2. high'], data[date]['3. low'], data[date]['4. close'], data[date]['5. volume'])
+            try:
+                insert_daily_price_volume(ticker, date, data[date]['1. open'], data[date]['2. high'], data[date]['3. low'], data[date]['4. close'], data[date]['5. volume'])
+            except:
+                new_date = date+" 16:00:01"
+                insert_daily_price_volume(ticker, new_date, data[new_date]['1. open'], data[new_date]['2. high'], data[new_date]['3. low'], data[new_date]['4. close'], data[new_date]['5. volume'])
         except:
-            print(str(datetime.datetime.now()) + " : WARNING --- Ticker: " + ticker + " Date: " + date + " Price/Volume data NOT FOUND!!!... Moving to the next one!!!")
+            print(str(datetime.datetime.now()) + " : WARNING --- Ticker: " + ticker + " Date: " + date + " Price/Volume data(" + url + ") NOT FOUND!!!... Moving to the next one!!!")
 
     else:
-        print(str(datetime.datetime.now()) + ' : ' + ticker + ' Price/Volume data ... ')
         for date in data:
             try:
                 new_date = datetime.datetime.strptime(date, '%Y-%m-%d').date()
@@ -40,14 +44,18 @@ def update_price_volume_data_for(ticker, api_key, date):
     response_data = r.json()
     data = response_data['Time Series (Daily)']
 
+    print(str(datetime.datetime.now()) + ' : . Price/Volume data')
     if is_valid_date(date):
         try:
-            update_daily_price_volume(ticker, date, data[date]['1. open'], data[date]['2. high'], data[date]['3. low'], data[date]['4. close'], data[date]['5. volume'])
+            try:
+                update_daily_price_volume(ticker, date, data[date]['1. open'], data[date]['2. high'], data[date]['3. low'], data[date]['4. close'], data[date]['5. volume'])
+            except:
+                new_date = date+" 16:00:01"
+                insert_daily_price_volume(ticker, new_date, data[new_date]['1. open'], data[new_date]['2. high'], data[new_date]['3. low'], data[new_date]['4. close'], data[new_date]['5. volume'])
         except:
-            print(str(datetime.datetime.now()) + " : WARNING --- Ticker: " + ticker + " Date: " + date + " Price/Volume data NOT FOUND!!!... Moving to the next one!!!")
+            print(str(datetime.datetime.now()) + " : WARNING --- Ticker: " + ticker + " Date: " + date + " Price/Volume data(" + url + ") NOT FOUND!!!... Moving to the next one!!!")
 
     else:
-        print(str(datetime.datetime.now()) + ' : ' + ticker + ' Price/Volume data ... ')
         for date in data:
             try:
                 new_date = datetime.datetime.strptime(date, '%Y-%m-%d').date()
@@ -70,14 +78,18 @@ def process_stochastic_data_for(ticker, api_key, date=None):
     response_data = r.json()
     data = response_data['Technical Analysis: STOCH']
 
+    print(str(datetime.datetime.now()) + ' : . Stochastic data')
     if is_valid_date(date):
         try:
-            update_daily_technicals_stochs(ticker, date, data[date]['SlowK'], data[date]['SlowD'], (float(data[date]['SlowK']) - float(data[date]['SlowD'])))
+            try:
+                update_daily_technicals_stochs(ticker, date, data[date]['SlowK'], data[date]['SlowD'], (float(data[date]['SlowK']) - float(data[date]['SlowD'])))
+            except:
+                new_date = date+" 16:00:01"
+                update_daily_technicals_stochs(ticker, new_date, data[new_date]['SlowK'], data[new_date]['SlowD'], (float(data[new_date]['SlowK']) - float(data[new_date]['SlowD'])))
         except:
-            print(str(datetime.datetime.now()) + " : WARNING --- Ticker: " + ticker + " Date: " + date + " Stochastic data NOT FOUND!!!... Moving to the next one!!!")
+            print(str(datetime.datetime.now()) + " : WARNING --- Ticker: " + ticker + " Date: " + date + " Stochastic data(" + url + ") NOT FOUND!!!... Moving to the next one!!!")
 
     else:
-        print(str(datetime.datetime.now()) + ' : ' + ticker + ' Stochastic data ... ')
         for date in data:
             try:
                 new_date = datetime.datetime.strptime(date, '%Y-%m-%d').date()
@@ -100,14 +112,18 @@ def process_rsi_data_for(ticker, api_key, date=None):
     response_data = r.json()
     data = response_data['Technical Analysis: RSI']
 
+    print(str(datetime.datetime.now()) + ' : . RSI data')
     if is_valid_date(date):
         try:
-            update_daily_technicals_rsi(ticker, date, data[date]['RSI'])
+            try:
+                update_daily_technicals_rsi(ticker, date, data[date]['RSI'])
+            except:
+                new_date = date+" 16:00:01"
+                update_daily_technicals_rsi(ticker, new_date, data[new_date]['RSI'])
         except:
             print(str(datetime.datetime.now()) + " : WARNING --- Ticker: " + ticker + " Date: " + date + " RSI data(" + url + ") NOT FOUND!!!... Moving to the next one!!!")
 
     else:
-        print(str(datetime.datetime.now()) + ' : ' + ticker + ' RSI data ... ')
         for date in data:
             try:
                 new_date = datetime.datetime.strptime(date, '%Y-%m-%d').date()
@@ -129,15 +145,20 @@ def process_ema_data_for(ticker, api_key, ema_period, date=None):
     response_data = r.json()
     data = response_data['Technical Analysis: EMA']
 
+    print(str(datetime.datetime.now()) + ' : . EMA-'+ str(ema_period) + ' data')
     if is_valid_date(date):
         ema_key = 'ema'+str(ema_period)
         try:
-            ema_value = data[date]['EMA']
-            update_daily_technicals_ema(ticker, date, ema_key, ema_value)
+            try:
+                ema_value = data[date]['EMA']
+                update_daily_technicals_ema(ticker, date, ema_key, ema_value)
+            except:
+                new_date = date+" 16:00:01"
+                ema_value = data[new_date]['EMA']
+                update_daily_technicals_ema(ticker, new_date, ema_key, ema_value)
         except:
-            print(str(datetime.datetime.now()) + " : WARNING --- Ticker: " + ticker + " Date: " + date + " " + ema_key + " NOT FOUND!!!... Moving to the next one!!!")
+            print(str(datetime.datetime.now()) + " : WARNING --- Ticker: " + ticker + " Date: " + date + " " + ema_key + "(" + url + ") NOT FOUND!!!... Moving to the next one!!!")
     else:
-        print(str(datetime.datetime.now()) + ' : ' + ticker + ' EMA-'+ str(ema_period) + ' data ... ')
         for date in data:
             try:
                 new_date = datetime.datetime.strptime(date, '%Y-%m-%d').date()

@@ -52,3 +52,8 @@ ALTER TABLE public."Signals"
     OWNER to postgres;
 
 
+watchlist
+ticker
+full_run
+last_run
+industry
