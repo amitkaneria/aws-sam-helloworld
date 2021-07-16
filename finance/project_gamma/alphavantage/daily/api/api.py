@@ -4,9 +4,12 @@ from finance.project_gamma.alphavantage.daily.dao.dao import insert_daily_price_
 from finance.project_gamma.alphavantage.daily.util.util import is_valid_date
 
 
-def process_price_volume_data_for(ticker, api_key, date):
+def process_price_volume_data_for(ticker, api_key, interval, date):
 
-    url = 'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={0}&outputsize=full&apikey={1}'.format(ticker, api_key)
+    if interval == 'daily':
+        interval_enum = 'TIME_SERIES_DAILY'
+
+    url = 'https://www.alphavantage.co/query?function={0}&symbol={1}&outputsize=full&apikey={2}'.format(interval_enum, ticker, api_key)
 
     r = requests.get(url)
     response_data = r.json()
@@ -36,9 +39,12 @@ def process_price_volume_data_for(ticker, api_key, date):
             else:
                 break
 
-def update_price_volume_data_for(ticker, api_key, date):
+def update_price_volume_data_for(ticker, api_key, interval, date):
 
-    url = 'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={0}&outputsize=full&apikey={1}'.format(ticker, api_key)
+    if interval == 'daily':
+        interval_enum = 'TIME_SERIES_DAILY'
+
+    url = 'https://www.alphavantage.co/query?function={0}&symbol={1}&outputsize=full&apikey={2}'.format(interval_enum, ticker, api_key)
 
     r = requests.get(url)
     response_data = r.json()
@@ -69,10 +75,10 @@ def update_price_volume_data_for(ticker, api_key, date):
                 break
 
 
-def process_stochastic_data_for(ticker, api_key, date=None):
+def process_stochastic_data_for(ticker, api_key, interval, date=None):
 
     # replace the "demo" apikey below with your own key from https://www.alphavantage.co/support/#api-key
-    url = 'https://www.alphavantage.co/query?function=STOCH&symbol={0}&interval=daily&apikey={1}'.format(ticker, api_key)
+    url = 'https://www.alphavantage.co/query?function=STOCH&symbol={0}&interval={1}&apikey={2}'.format(ticker, interval, api_key)
 
     r = requests.get(url)
     response_data = r.json()
@@ -103,10 +109,10 @@ def process_stochastic_data_for(ticker, api_key, date=None):
                 break
 
 
-def process_rsi_data_for(ticker, api_key, date=None):
+def process_rsi_data_for(ticker, api_key, interval, date=None):
 
     # replace the "demo" apikey below with your own key from https://www.alphavantage.co/support/#api-key
-    url = 'https://www.alphavantage.co/query?function=RSI&symbol={0}&interval=daily&time_period=10&series_type=open&apikey={1}'.format(ticker, api_key)
+    url = 'https://www.alphavantage.co/query?function=RSI&symbol={0}&interval={1}&time_period=10&series_type=open&apikey={2}'.format(ticker, interval, api_key)
 
     r = requests.get(url)
     response_data = r.json()
@@ -136,10 +142,10 @@ def process_rsi_data_for(ticker, api_key, date=None):
             else:
                 break
 
-def process_ema_data_for(ticker, api_key, ema_period, date=None):
+def process_ema_data_for(ticker, api_key, ema_period, interval, date=None):
 
     # replace the "demo" apikey below with your own key from https://www.alphavantage.co/support/#api-key
-    url = 'https://www.alphavantage.co/query?function=EMA&symbol={0}&interval=daily&time_period={1}&series_type=open&apikey={2}'.format(ticker, ema_period, api_key)
+    url = 'https://www.alphavantage.co/query?function=EMA&symbol={0}&interval={1}&time_period={2}&series_type=open&apikey={3}'.format(ticker, interval, ema_period, api_key)
 
     r = requests.get(url)
     response_data = r.json()
@@ -172,14 +178,14 @@ def process_ema_data_for(ticker, api_key, ema_period, date=None):
                 break
 
 
-def process_ema8_data_for(ticker, api_key, date=None):
-    process_ema_data_for(ticker, api_key, ema_period=8, date=date)
+def process_ema8_data_for(ticker, api_key, interval, date=None):
+    process_ema_data_for(ticker, api_key, ema_period=8, interval=interval, date=date)
 
 
-def process_ema12_data_for(ticker, api_key, date=None):
-    process_ema_data_for(ticker, api_key, ema_period=12, date=date)
+def process_ema12_data_for(ticker, api_key, interval, date=None):
+    process_ema_data_for(ticker, api_key, ema_period=12, interval=interval, date=date)
 
 
-def process_ema200_data_for(ticker, api_key, date=None):
-    process_ema_data_for(ticker, api_key, ema_period=200, date=date)
+def process_ema200_data_for(ticker, api_key, interval, date=None):
+    process_ema_data_for(ticker, api_key, ema_period=200, interval=interval, date=date)
 

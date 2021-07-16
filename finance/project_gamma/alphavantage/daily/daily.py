@@ -4,16 +4,17 @@ from finance.project_gamma.alphavantage.daily.api.api import process_price_volum
 from finance.project_gamma.alphavantage.daily.util.util import is_valid_date
 
 
-def process_data_for(ticker, api_key, date):
+def process_data_for(ticker, api_key, interval, date):
+    print(str(datetime.datetime.now()) + ' : ##### ##### ##### ##### #####')
     print(str(datetime.datetime.now()) + ' : '+ ticker)
-    process_price_volume_data_for(ticker, api_key=API_KEY, date=date)
-    process_stochastic_data_for(ticker, api_key=API_KEY, date=date)
-    process_ema8_data_for(ticker, api_key=API_KEY, date=date)
-    process_ema12_data_for(ticker, api_key=API_KEY, date=date)
-    # print(str(datetime.datetime.now()) + ' : . . . sleeping')
-    # time.sleep(20)
-    process_ema200_data_for(ticker, api_key=API_KEY, date=date)
-    process_rsi_data_for(ticker, api_key=API_KEY, date=date)
+    process_price_volume_data_for(ticker, api_key=API_KEY, interval=interval, date=date)
+    process_stochastic_data_for(ticker, api_key=API_KEY, interval=interval, date=date)
+    process_ema8_data_for(ticker, api_key=API_KEY, interval=interval, date=date)
+    process_ema12_data_for(ticker, api_key=API_KEY, interval=interval, date=date)
+    print(str(datetime.datetime.now()) + ' : . . . sleeping')
+    time.sleep(20)
+    process_ema200_data_for(ticker, api_key=API_KEY, interval=interval, date=date)
+    process_rsi_data_for(ticker, api_key=API_KEY, interval=interval, date=date)
 
 
 def generate_signals_data():
@@ -67,10 +68,13 @@ ticker_list_delta = ['HGV', 'APHA', 'FVRR', 'ADBE', 'AI']
 ################################################################################
 API_KEY='XYF81MAS06D29A24'
 
-option=2
+option=1
 print('Select Options below:' + str(option))
 
-ticker_list = [ticker_list_etf, ticker_list_tech_behemoths, ticker_list_tech_shopping, ticker_list_tech_fin, ticker_list_tech_chips,
+
+# ticker_list = [ticker_list_etf, ticker_list_tech_behemoths,
+ticker_list = [
+               ticker_list_tech_shopping, ticker_list_tech_fin, ticker_list_tech_chips,
                ticker_list_meme, ticker_list_weed, ticker_list_blockchain,
                ticker_list_tech_betting, ticker_list_tech_database, ticker_list_tech_gaming, ticker_list_tech_network, ticker_list_tech_security,
                ticker_list_tech_bio, ticker_list_tech_software, ticker_list_tech_titans, ticker_list_tech_insurance, ticker_list_tech_re,
@@ -79,14 +83,15 @@ ticker_list = [ticker_list_etf, ticker_list_tech_behemoths, ticker_list_tech_sho
                ticker_list_cars,  ticker_list_ark_funds, ticker_list_energy, ticker_list_travel,
                ticker_list_govt, ticker_list_pharma]
 
+
 ## DEFAULT ##  for Multiple Ticker list, and for a given DATE, usually today's
 ## This updates all data for today's date (or any missing date data)
 if option == 1:
 
     for sub_ticker_list in ticker_list:
         for ticker in sub_ticker_list:
-            # process_data_for(ticker, api_key=API_KEY, date='2021-07-14')
-            process_data_for(ticker, api_key=API_KEY, date=None)
+            process_data_for(ticker, api_key=API_KEY, interval='daily', date='2021-07-16')
+            # process_data_for(ticker, api_key=API_KEY, interval='daily', date=None)
             print(str(datetime.datetime.now()) + ' : . . . sleeping')
             time.sleep(25)
 
@@ -98,12 +103,12 @@ elif option == 2:
 
     for sub_ticker_list in ticker_list:
         for ticker in sub_ticker_list:
-            process_data_for(ticker, api_key=API_KEY, date=None)
-            # process_data_for(ticker, api_key=API_KEY, date='2021-07-07')
-            # update_price_volume_data_for(ticker, api_key=API_KEY, date='2021-07-07')
-            # update_price_volume_data_for(ticker, api_key=API_KEY, date=date)
-            # process_rsi_data_for(ticker, api_key=API_KEY, date=None)
-            # process_rsi_data_for(ticker, api_key=API_KEY, date='2021-07-13')
+            process_data_for(ticker, api_key=API_KEY, interval='daily', date=None)
+            # process_data_for(ticker, api_key=API_KEY, interval='daily', date='2021-07-07')
+            # update_price_volume_data_for(ticker, api_key=API_KEY, interval='daily', date='2021-07-07')
+            # update_price_volume_data_for(ticker, api_key=API_KEY, interval='daily', date=date)
+            # process_rsi_data_for(ticker, api_key=API_KEY, interval='daily', date=None)
+            # process_rsi_data_for(ticker, api_key=API_KEY, interval='daily', date='2021-07-13')
             # print(str(datetime.datetime.now()) + ' : sleeping for 1 min')
             # time.sleep(60)
 
