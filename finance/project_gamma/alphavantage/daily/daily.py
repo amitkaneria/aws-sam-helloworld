@@ -7,16 +7,17 @@ from finance.project_gamma.alphavantage.daily.dao.dao import update_status, inse
 def process_data_for(ticker, api_key, interval, date):
     print(str(datetime.datetime.now()) + ' : ##### ##### ##### ##### #####')
     print(str(datetime.datetime.now()) + ' : '+ ticker)
-    process_price_volume_data_for(ticker, api_key=API_KEY, interval=interval, date=date)
-    process_stochastic_data_for(ticker, api_key=API_KEY, interval=interval, date=date)
-    process_ema8_data_for(ticker, api_key=API_KEY, interval=interval, date=date)
-    process_ema12_data_for(ticker, api_key=API_KEY, interval=interval, date=date)
+    # process_price_volume_data_for(ticker, api_key=API_KEY, interval=interval, date=date)
+    # process_stochastic_data_for(ticker, api_key=API_KEY, interval=interval, date=date)
+    # process_ema8_data_for(ticker, api_key=API_KEY, interval=interval, date=date)
+    # process_ema12_data_for(ticker, api_key=API_KEY, interval=interval, date=date)
     # print(str(datetime.datetime.now()) + ' : . . . sleeping')
     # time.sleep(20)
     ###### process_ema200_data_for(ticker, api_key=API_KEY, interval=interval, date=date)
     process_ema21_data_for(ticker, api_key=API_KEY, interval=interval, date=date)
     process_rsi_data_for(ticker, api_key=API_KEY, interval=interval, date=date)
-    insert_status(ticker, interval=interval, date=datetime.datetime.now().strftime("%Y-%m-%d"))
+    # insert_status(ticker, interval=interval, date=datetime.datetime.now().strftime("%Y-%m-%d"))
+    update_status(ticker, interval=interval, date=datetime.datetime.now().strftime("%Y-%m-%d"))
 
 def generate_signals_data():
     process_ema_8_12_buy_signals()
@@ -92,10 +93,10 @@ if option == 1:
     for sub_ticker_list in ticker_list:
         for ticker in sub_ticker_list:
             # process_data_for(ticker, api_key=API_KEY, interval='daily', date='2021-07-16')
-            process_data_for(ticker, api_key=API_KEY, interval='weekly', date=None)
-            # process_data_for(ticker, api_key=API_KEY, interval='daily', date=None)
-            print(str(datetime.datetime.now()) + ' : . . . sleeping')
-            time.sleep(25)
+            # process_data_for(ticker, api_key=API_KEY, interval='weekly', date=None)
+            process_data_for(ticker, api_key=API_KEY, interval='daily', date=None)
+            # print(str(datetime.datetime.now()) + ' : . . . sleeping')
+            # time.sleep(25)
 
 
 # use this for newly monitored ticker List ##  for Multiple Ticker list
@@ -116,11 +117,11 @@ elif option == 2:
 
 elif option == 3:
 
-    # process_data_for(ticker, api_key=API_KEY, interval='daily', date='2021-07-16')
-    process_data_for('DIA', api_key=API_KEY, interval='weekly', date=None)
-    # process_data_for(ticker, api_key=API_KEY, interval='daily', date=None)
-    print(str(datetime.datetime.now()) + ' : . . . sleeping')
-    time.sleep(25)
+        # process_data_for(ticker, api_key=API_KEY, interval='daily', date='2021-07-16')
+        # process_data_for(ticker, api_key=API_KEY, interval='weekly', date=None)
+        process_data_for("SPY", api_key=API_KEY, interval='daily', date=None)
+        # print(str(datetime.datetime.now()) + ' : . . . sleeping')
+        # time.sleep(25)
 
 
 else:

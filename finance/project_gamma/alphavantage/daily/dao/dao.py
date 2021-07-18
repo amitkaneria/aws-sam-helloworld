@@ -5,7 +5,7 @@ import psycopg2
 def insert_daily_price_volume(ticker, date, interval, open, high, low, close, volume):
 
     if interval == 'daily':
-        sql = """INSERT INTO \"Tech_Daily\"(open, high, low, close, volume, ticker, date)
+        sql = """INSERT INTO \"Daily_Data\"(open, high, low, close, volume, ticker, date)
                  VALUES(%s, %s, %s, %s, %s, %s, %s) ;"""
     elif interval == 'weekly':
         sql = """INSERT INTO \"Weekly_Data\"(open, high, low, close, volume, ticker, date)
@@ -39,7 +39,7 @@ def update_daily_price_volume(ticker, date, interval, open, high, low, close, vo
 
 
     if interval == 'daily':
-        sql = """UPDATE \"Tech_Daily\" SET open=%s, high=%s, low=%s, close=%s, volume=%s
+        sql = """UPDATE \"Daily_Data\" SET open=%s, high=%s, low=%s, close=%s, volume=%s
                   WHERE ticker=%s and date=%s ;"""
     elif interval == 'weekly':
         sql = """UPDATE \"Weekly_Data\" SET open=%s, high=%s, low=%s, close=%s, volume=%s
@@ -71,7 +71,7 @@ def update_daily_price_volume(ticker, date, interval, open, high, low, close, vo
 def insert_daily_technicals_stochs(ticker, date, interval, stochs_slowk, stochs_slowd, stochs_delta):
 
     if interval == 'daily':
-        sql = """INSERT INTO \"Tech_Daily\"(ticker, date, stochs_slowk, stochs_slowd, stochs_delta)
+        sql = """INSERT INTO \"Daily_Data\"(ticker, date, stochs_slowk, stochs_slowd, stochs_delta)
                  VALUES(%s, %s, %s, %s, %s) ;"""
     elif interval == 'weekly':
         sql = """INSERT INTO \"Weekly_Data\"(ticker, date, stochs_slowk, stochs_slowd, stochs_delta)
@@ -105,7 +105,7 @@ def insert_daily_technicals_stochs(ticker, date, interval, stochs_slowk, stochs_
 def update_daily_technicals_stochs(ticker, date, interval, stochs_slowk, stochs_slowd, stochs_delta):
 
     if interval == 'daily':
-        sql = """UPDATE \"Tech_Daily\" SET stochs_slowk=%s, stochs_slowd=%s, stochs_delta=%s
+        sql = """UPDATE \"Daily_Data\" SET stochs_slowk=%s, stochs_slowd=%s, stochs_delta=%s
                  WHERE ticker=%s AND date=%s ;"""
     elif interval == 'weekly':
         sql = """UPDATE \"Weekly_Data\" SET stochs_slowk=%s, stochs_slowd=%s, stochs_delta=%s
@@ -137,7 +137,7 @@ def update_daily_technicals_stochs(ticker, date, interval, stochs_slowk, stochs_
 def update_daily_technicals_rsi(ticker, date, interval, rsi_value):
 
     if interval == 'daily':
-        sql = """UPDATE \"Tech_Daily\" SET rsi=%s
+        sql = """UPDATE \"Daily_Data\" SET rsi=%s
                  WHERE ticker=%s AND date=%s ;"""
     elif interval == 'weekly':
         sql = """UPDATE \"Weekly_Data\" SET rsi=%s
@@ -171,19 +171,19 @@ def update_daily_technicals_ema(ticker, date, interval, ema_key, ema_value):
 
     if interval == 'daily':
         if ema_key == 'ema8':
-            sql = """UPDATE \"Tech_Daily\" SET ema8=%s
+            sql = """UPDATE \"Daily_Data\" SET ema8=%s
                      WHERE ticker=%s AND date=%s ;"""
         elif ema_key == 'ema9':
-            sql = """UPDATE \"Tech_Daily\" SET ema9=%s
+            sql = """UPDATE \"Daily_Data\" SET ema9=%s
                      WHERE ticker=%s AND date=%s ;"""
         elif ema_key == 'ema12':
-            sql = """UPDATE \"Tech_Daily\" SET ema12=%s
+            sql = """UPDATE \"Daily_Data\" SET ema12=%s
                      WHERE ticker=%s AND date=%s ;"""
         elif ema_key == 'ema21':
-            sql = """UPDATE \"Tech_Daily\" SET ema21=%s
+            sql = """UPDATE \"Daily_Data\" SET ema21=%s
                      WHERE ticker=%s AND date=%s ;"""
         elif ema_key == 'ema200':
-            sql = """UPDATE \"Tech_Daily\" SET ema200=%s
+            sql = """UPDATE \"Daily_Data\" SET ema200=%s
                      WHERE ticker=%s AND date=%s ;"""
     elif interval == 'weekly':
         if ema_key == 'ema8':
