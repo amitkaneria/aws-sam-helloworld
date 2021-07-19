@@ -24,30 +24,52 @@ calendar = Calendar(
     extra_working_dates=[],
 )
 
+
 def next_business_day(input_date):
-    temp_day = business_day
+    temp_day = datetime.datetime.strptime(str(input_date), '%Y-%m-%d').date() + datetime.timedelta(days=1)
     while True:
-        temp_day = datetime.datetime.strptime(str(temp_day), '%Y-%m-%d').date() + datetime.timedelta(days=1)
         if calendar.is_business_day(temp_day):
-            return temp_day
             break
             # print(datetime.datetime.strptime(datetime.datetime.now().date(), '%Y-%m-%d').date())
         else:
-            continue
+            temp_day = datetime.datetime.strptime(str(temp_day), '%Y-%m-%d').date() + datetime.timedelta(days=1)
 
-# print(calendar.is_business_day("2021-01-01"))
-# print(calendar.is_business_day("2021-01-18"))
-# print(calendar.is_business_day("2021-01-19"))
-# print(calendar.is_business_day("2021-09-06"))
-# print(calendar.is_business_day("2021-09-07"))
-#
-# print(datetime.datetime.now())
-# print(datetime.datetime.now().date())
-# print(datetime.datetime.today().date())
-# print(datetime.datetime.today().date() + datetime.timedelta(days=1))
-#
-# business_day = '2021-01-04'
-# print('next business days calculation for ' + business_day)
+    return temp_day
+
+
+def previous_business_day(input_date):
+    temp_day = datetime.datetime.strptime(str(input_date), '%Y-%m-%d').date() + datetime.timedelta(days=-1)
+    while True:
+        if calendar.is_business_day(temp_day):
+            break
+            # print(datetime.datetime.strptime(datetime.datetime.now().date(), '%Y-%m-%d').date())
+        else:
+            temp_day = datetime.datetime.strptime(str(temp_day), '%Y-%m-%d').date() + datetime.timedelta(days=-1)
+
+    return temp_day
+
+
+def previous_week_business_day(input_date):
+    temp_day = datetime.datetime.strptime(str(input_date), '%Y-%m-%d').date() + datetime.timedelta(days=-7)
+    while True:
+        if calendar.is_business_day(temp_day):
+            break
+            # print(datetime.datetime.strptime(datetime.datetime.now().date(), '%Y-%m-%d').date())
+        else:
+            temp_day = datetime.datetime.strptime(str(temp_day), '%Y-%m-%d').date() + datetime.timedelta(days=-1)
+
+    return temp_day
+
+
+# business_day = '2020-12-31'
 # next_business_day = next_business_day(business_day)
 # print(next_business_day)
+
+# business_day = '2020-12-31'
+# previous_business_day = previous_business_day(business_day)
+# print(previous_business_day)
+
+# business_day = '2020-12-31'
+# previous_week_business_day = previous_week_business_day(business_day)
+# print(previous_week_business_day)
 

@@ -7,17 +7,23 @@ ORDER BY ticker ASC, date desc
 --insert into public."Weekly_Signals"(ticker, date, buy_sell, method, note, reco_price)
 SELECT A.ticker, B.date, 'buy', 'STOCH_SLOW', 'stoch-slow 5-3-3 indicates signal, please verify with other technicals and material news, ratings changes', B.close
 FROM public."Weekly_Data" A, public."Weekly_Data" B
-where A.ticker = B.ticker and A.date = '2021-07-13'  and B.date = '2021-07-14'
+where A.ticker = B.ticker and A.date = '2021-07-09'  and B.date = '2021-07-16'
 --and A.stochs_delta < 0 and B.stochs_delta > 0  and A.stochs_slowk < 40
-and ((A.stochs_delta < 0 and B.stochs_delta > 0  and A.stochs_slowk < 65) OR ((B.stochs_delta - A.stochs_delta) > 10))
+and A.stochs_delta < 0 and B.stochs_delta > 0  and A.stochs_slowk < 65
 
----- EMA BUY
+---- EMA 8/12 buy
 --insert into public."Weekly_Signals"(ticker, date, buy_sell, method, note, reco_price)
 SELECT A.ticker, A.date, 'buy', 'EMA_8_12', 'EMA 8 crossing EMA upside indicates buy signal, please verify with other technicals and material news, ratings changes', A.close
 FROM public."Weekly_Data" A, public."Weekly_Data" B
-where A.ticker = B.ticker and B.date = '2021-07-13' and A.date = '2021-07-14'
+where A.ticker = B.ticker and B.date = '2021-07-09' and A.date = '2021-07-16'
 and B.ema8 < B.ema12  and A.ema8 > A.ema12 --and A.ticker = 'OKTA'
--- DONE from 06/01/2021 -- until 07/09
+
+---- EMA 21 buy
+--insert into public."Weekly_Signals"(ticker, date, buy_sell, method, note, reco_price)
+SELECT A.ticker, A.date, 'buy', 'EMA_8_12', 'EMA 8 crossing EMA upside indicates buy signal, please verify with other technicals and material news, ratings changes', A.close
+FROM public."Weekly_Data" A, public."Weekly_Data" B
+where A.ticker = B.ticker and B.date = '2021-07-09' and A.date = '2021-07-16'
+and B.close < B.ema21 and A.close > B.ema21
 
 ---- RSI Buy -- OVERSOLD
 --insert into public."Weekly_Signals"(ticker, date, buy_sell, method, note, reco_price)
@@ -48,7 +54,6 @@ SELECT A.ticker, B.date, 'sell', 'STOCH_SLOW', 'stoch-slow 5-3-3 indicates signa
 FROM public."Weekly_Data" A, public."Weekly_Data" B
 where A.ticker = B.ticker and A.date = '2021-07-13' and B.date = '2021-07-14'
 and A.stochs_delta > 0 and B.stochs_delta < 0  and A.stochs_slowk > 70
--- DONE from 06/01/2021 -- until 07/09
 
 SELECT A.ticker, B.date, 'sell', 'STOCH_SLOW', 'stoch-slow 5-3-3 indicates signal, please verify with other technicals and material news, ratings changes', B.close
 FROM public."Weekly_Data" A, public."Weekly_Data" B
@@ -62,5 +67,4 @@ SELECT A.ticker, B.date, 'sell', 'EMA_8_12', 'EMA 8 crossing EMA upside indicate
 FROM public."Weekly_Data" A, public."Weekly_Data" B
 where A.ticker = B.ticker and A.date = '2021-07-13' and B.date = '2021-07-14'
 and A.ema8 > A.ema12 and B.ema8 < B.ema12   --and A.ticker = 'OKTA'
--- DONE from 06/01/2021 -- until 07/09
 

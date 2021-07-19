@@ -3,29 +3,30 @@ import datetime
 from finance.project_gamma.alphavantage.daily.api.api import process_price_volume_data_for, process_stochastic_data_for, process_ema8_data_for, process_ema12_data_for, process_ema21_data_for, update_price_volume_data_for, process_rsi_data_for
 from finance.project_gamma.alphavantage.daily.util.util import is_valid_date
 from finance.project_gamma.alphavantage.daily.dao.dao import update_status, insert_status, get_status
+from finance.project_gamma.alphavantage.daily.dao.data_analytics_dao import process_ema_8_12_buy_signals
 
 def process_data_for(ticker, api_key, interval, date):
     print(str(datetime.datetime.now()) + ' : ##### ##### ##### ##### #####')
     print(str(datetime.datetime.now()) + ' : '+ ticker)
-    # process_price_volume_data_for(ticker, api_key=API_KEY, interval=interval, date=date)
-    # process_stochastic_data_for(ticker, api_key=API_KEY, interval=interval, date=date)
-    # process_ema8_data_for(ticker, api_key=API_KEY, interval=interval, date=date)
-    # process_ema12_data_for(ticker, api_key=API_KEY, interval=interval, date=date)
-    # print(str(datetime.datetime.now()) + ' : . . . sleeping')
-    # time.sleep(20)
-    ###### process_ema200_data_for(ticker, api_key=API_KEY, interval=interval, date=date)
+    process_price_volume_data_for(ticker, api_key=API_KEY, interval=interval, date=date)
+    process_stochastic_data_for(ticker, api_key=API_KEY, interval=interval, date=date)
+    process_ema8_data_for(ticker, api_key=API_KEY, interval=interval, date=date)
+    process_ema12_data_for(ticker, api_key=API_KEY, interval=interval, date=date)
+    print(str(datetime.datetime.now()) + ' : . . . sleeping')
+    time.sleep(20)
     process_ema21_data_for(ticker, api_key=API_KEY, interval=interval, date=date)
     process_rsi_data_for(ticker, api_key=API_KEY, interval=interval, date=date)
+    ###### process_ema200_data_for(ticker, api_key=API_KEY, interval=interval, date=date)
     # insert_status(ticker, interval=interval, date=datetime.datetime.now().strftime("%Y-%m-%d"))
     update_status(ticker, interval=interval, date=datetime.datetime.now().strftime("%Y-%m-%d"))
 
-def generate_signals_data():
-    process_ema_8_12_buy_signals()
-    process_ema_8_12_sell_signals()
-    process_stochastic_slow_buy_signals()
-    process_stochastic_slow_sell_signals()
-    process_rsi_buy_signals()
-    process_rsi_sell_signals()
+def generate_signal(date, interval='daily'):
+    process_ema_8_12_buy_signals(date, interval='daily')
+    # process_ema_8_12_sell_signals(date, interval='daily')
+    # process_stochastic_slow_buy_signals(date, interval='daily')
+    # process_stochastic_slow_sell_signals(date, interval='daily')
+    # process_rsi_buy_signals(date, interval='daily')
+    # process_rsi_sell_signals(date, interval='daily')
 
 
 ticker_list_etf             = ['SPY', 'QQQ', 'DIA', 'SQQQ', 'SPXU', 'SDS', 'SH', 'UPRO']
@@ -65,21 +66,22 @@ ticker_list_new     = ['AA', 'HDB', 'SCHW', 'ERIC', 'STT', 'BNTX']
 ticker_list_new1    = ['UBS', 'CMG', 'TRV', 'IBKR', 'TER', 'PCAR', 'HAL', 'ALLY', 'CIT', 'JNJ', 'ANTM', 'CSX', 'EFX', 'NVS', 'TXN', 'WHR']
 
 #7/14
-ticker_list_delta = ['HGV', 'APHA', 'FVRR', 'ADBE', 'AI']
+ticker_list_delta = ['UPST', 'HGV', 'APHA', 'FVRR', 'ADBE', 'AI']
 
 ################################################################################
 API_KEY='XYF81MAS06D29A24'
 
-option=1
+option=4
 print('Select Options below:' + str(option))
 
 
 ticker_list = [
-               ticker_list_etf, ticker_list_tech_behemoths,
-               ticker_list_tech_shopping, ticker_list_tech_fin, ticker_list_tech_chips,
-               ticker_list_meme, ticker_list_weed, ticker_list_blockchain, ticker_list_tech_betting,
-               ticker_list_tech_database, ticker_list_tech_gaming, ticker_list_tech_network, ticker_list_tech_security,
-               ticker_list_tech_bio, ticker_list_tech_software, ticker_list_tech_titans, ticker_list_tech_insurance, ticker_list_tech_re,
+               # ticker_list_etf, ticker_list_tech_behemoths,
+               # ticker_list_tech_shopping, ticker_list_tech_fin, ticker_list_tech_chips,
+               # ticker_list_meme, ticker_list_weed, ticker_list_blockchain, ticker_list_tech_betting,
+               # ticker_list_tech_database, ticker_list_tech_gaming, ticker_list_tech_network, ticker_list_tech_security,
+               # ticker_list_tech_bio,
+    ticker_list_tech_software, ticker_list_tech_titans, ticker_list_tech_insurance, ticker_list_tech_re,
                ticker_list_tech_streaming, ticker_list_china, ticker_list_staple, ticker_list_fin, ticker_list_transport, ticker_list_consumer,
                ticker_list_housing, ticker_list_tech_mfg,
                ticker_list_cars,  ticker_list_ark_funds, ticker_list_energy, ticker_list_travel,
@@ -117,11 +119,13 @@ elif option == 2:
 
 elif option == 3:
 
-        # process_data_for(ticker, api_key=API_KEY, interval='daily', date='2021-07-16')
-        # process_data_for(ticker, api_key=API_KEY, interval='weekly', date=None)
-        process_data_for("SPY", api_key=API_KEY, interval='daily', date=None)
-        # print(str(datetime.datetime.now()) + ' : . . . sleeping')
-        # time.sleep(25)
+        # process_data_for("UPST", api_key=API_KEY, interval='weekly', date=None)
+        process_data_for("UPST", api_key=API_KEY, interval='daily', date=None)
+
+elif option == 4:
+
+        generate_signal(date='2021-07-16', interval='daily')
+        # generate_signal(date=None, interval='weekly')
 
 
 else:
