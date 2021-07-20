@@ -1,5 +1,6 @@
 import datetime
 import psycopg2
+from finance.project_gamma.alphavantage.daily.util.util import is_valid_date, next_business_day, previous_business_day, previous_week_business_day, last_business_day, date_business_day
 
 
 def insert_daily_price_volume(ticker, date, interval, open, high, low, close, volume):
@@ -221,6 +222,41 @@ def update_daily_technicals_ema(ticker, date, interval, ema_key, ema_value):
         cur.close()
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
+    finally:
+        if conn is not None:
+            conn.close()
+
+
+
+def get_tickers(last_run_date):
+
+    if last_run_date == None:
+        last_run_date = last_business_day(date=None)
+    sql = """select ticker from public."WatchList" where daily_last_run_date < %s order by seq ;"""
+
+    conn = None
+    try:
+        # read database configuration
+        # params = config()
+        # connect to the PostgreSQL database
+        conn = psycopg2.connect(
+            # **params
+            database="Gamma", user='postgres', password='admin', host='127.0.0.1', port= '5432'
+        )
+        cur = conn.cursor()
+        cur.execute(sql, (last_run_date,))
+        ticker_list = []
+        rows = cur.fetchall()
+        for row in rows:
+            ticker_list.append(row[0])
+        # # commit the changes to the database
+        # conn.commit()
+        # close communication with the database
+        cur.close()
+        return ticker_list
+    except (Exception, psycopg2.DatabaseError) as error:
+        print(error)
+        return None
     finally:
         if conn is not None:
             conn.close()

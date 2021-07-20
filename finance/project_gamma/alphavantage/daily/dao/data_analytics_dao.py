@@ -14,7 +14,7 @@ def process_ema_8_12_buy_signals(date, interval='daily'):
                 SELECT A.ticker, B.date, 'buy', 'STOCH_SLOW', 'stoch-slow 5-3-3 indicates signal, please verify with other technicals and material news, ratings changes', B.close
                 FROM public."Weekly_Data" A, public."Weekly_Data" B
                 WHERE A.ticker = B.ticker AND A.date = %s AND B.date = %s
-                    AND (A.stochs_delta < 0 and B.stochs_delta > 0  and A.stochs_slowk < 65)
+                    AND A.stochs_delta < 0 and B.stochs_delta > 0  and A.stochs_slowk < 65
                 ;"""
     elif interval == 'weekly':
         start_date = previous_week_business_day(date)
@@ -22,7 +22,7 @@ def process_ema_8_12_buy_signals(date, interval='daily'):
                 SELECT A.ticker, B.date, 'buy', 'STOCH_SLOW', 'stoch-slow 5-3-3 indicates signal, please verify with other technicals and material news, ratings changes', B.close
                 FROM public."Weekly_Data" A, public."Weekly_Data" B
                 WHERE A.ticker = B.ticker AND A.date = %s AND B.date = %s
-                    AND (A.stochs_delta < 0 and B.stochs_delta > 0  and A.stochs_slowk < 65)
+                    AND A.stochs_delta < 0 and B.stochs_delta > 0  and A.stochs_slowk < 65
                 ;"""
 
     conn = None

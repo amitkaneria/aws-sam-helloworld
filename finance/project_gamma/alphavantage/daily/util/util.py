@@ -24,6 +24,30 @@ calendar = Calendar(
     extra_working_dates=[],
 )
 
+def last_business_day(date=datetime.date.today()):
+
+    if date == None:
+        date = datetime.date.today()
+
+    if calendar.is_business_day(date):
+        return date
+
+    temp_day = datetime.datetime.strptime(str(date), '%Y-%m-%d').date() + datetime.timedelta(days=-1)
+    while True:
+        if calendar.is_business_day(temp_day):
+            break
+            # print(datetime.datetime.strptime(datetime.datetime.now().date(), '%Y-%m-%d').date())
+        else:
+            temp_day = datetime.datetime.strptime(str(temp_day), '%Y-%m-%d').date() + datetime.timedelta(days=-1)
+
+    return temp_day
+
+
+def date_business_day(date):
+    if calendar.is_business_day(date):
+        return True
+    return False
+
 
 def next_business_day(input_date):
     temp_day = datetime.datetime.strptime(str(input_date), '%Y-%m-%d').date() + datetime.timedelta(days=1)
@@ -73,3 +97,8 @@ def previous_week_business_day(input_date):
 # previous_week_business_day = previous_week_business_day(business_day)
 # print(previous_week_business_day)
 
+# print(date_business_day('2021-07-18'))
+# print(date_business_day(datetime.date.today()))
+
+# print(last_business_day('2021-07-18'))
+# print(last_business_day(None))
