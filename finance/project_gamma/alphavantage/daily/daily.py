@@ -1,9 +1,9 @@
 import time
 import datetime
 from finance.project_gamma.alphavantage.daily.api.api import process_price_volume_data_for, process_stochastic_data_for, process_ema8_data_for, process_ema12_data_for, process_ema21_data_for, update_price_volume_data_for, process_rsi_data_for
-from finance.project_gamma.alphavantage.daily.util.util import is_valid_date, last_business_day
+from finance.project_gamma.alphavantage.daily.util.util import is_valid_date, last_business_day, date_business_day, previous_business_day, next_business_day, previous_week_business_day, next_week_business_day
 from finance.project_gamma.alphavantage.daily.dao.dao import update_status, insert_status, get_status, get_tickers
-from finance.project_gamma.alphavantage.daily.dao.data_analytics_dao import process_ema_8_12_buy_signals
+from finance.project_gamma.alphavantage.daily.dao.data_analytics_dao import process_signals
 
 def process_data_for(ticker, api_key, interval, date):
     print(str(datetime.datetime.now()) + ' : ##### ##### '+ ticker + ' ##### #####')
@@ -16,16 +16,49 @@ def process_data_for(ticker, api_key, interval, date):
     process_ema21_data_for(ticker, api_key=API_KEY, interval=interval, date=date)
     process_rsi_data_for(ticker, api_key=API_KEY, interval=interval, date=date)
     ###### process_ema200_data_for(ticker, api_key=API_KEY, interval=interval, date=date)
+
+    ###### Update DB Status
     # insert_status(ticker, interval=interval, date=datetime.datetime.now().strftime("%Y-%m-%d"))
     update_status(ticker, interval=interval, date=datetime.datetime.now().strftime("%Y-%m-%d"))
 
-def generate_signal(date, interval='daily'):
-    process_ema_8_12_buy_signals(date, interval='daily')
-    # process_ema_8_12_sell_signals(date, interval='daily')
-    # process_stochastic_slow_buy_signals(date, interval='daily')
-    # process_stochastic_slow_sell_signals(date, interval='daily')
-    # process_rsi_buy_signals(date, interval='daily')
-    # process_rsi_sell_signals(date, interval='daily')
+def generate_signal(interval='daily', start_date='2020-12-31', end_date=None):
+
+    if end_date == None:
+        end_date = datetime.date.today()
+    else:
+        end_date = datetime.datetime.strptime(end_date, '%Y-%m-%d').date()
+
+    if interval == 'daily':
+        next_business_date = next_business_day(start_date)
+    elif interval == 'weekly':
+        next_business_date = next_week_business_day(start_date)
+
+    print("##### Generating Report for Interval :" + interval)
+    while next_business_date <= datetime.date.today() and next_business_date <= end_date:
+
+        print("##### START DATE : " + str(start_date) + " , ## END DATE : " + str(next_business_date))
+
+        ## Potential trend change indicators
+        process_signals(start_date, end_date=next_business_date, interval=interval, method='stoch.slow', buy_sell='buy')
+        process_signals(start_date, end_date=next_business_date, interval=interval, method='stoch.slow', buy_sell='sell')
+        process_signals(start_date, end_date=next_business_date, interval=interval, method='rsi', buy_sell='buy')
+        # process_signals(start_date, end_date=next_business_date, interval=interval, method='rsi', buy_sell='sell')
+
+        ## Strong trend indicators
+        process_signals(start_date, end_date=next_business_date, interval=interval, method='ema.8.12', buy_sell='buy')
+        process_signals(start_date, end_date=next_business_date, interval=interval, method='ema.8.12', buy_sell='sell')
+        process_signals(start_date, end_date=next_business_date, interval=interval, method='ema.21', buy_sell='buy')
+        process_signals(start_date, end_date=next_business_date, interval=interval, method='ema.21', buy_sell='sell')
+
+        ## Special Indicators
+        process_signals(start_date, end_date=next_business_date, interval=interval, method='amit.special', buy_sell='buy')
+        process_signals(start_date, end_date=next_business_date, interval=interval, method='amit.special', buy_sell='sell')
+
+        start_date = next_business_date
+        if interval == 'daily':
+            next_business_date = next_business_day(start_date)
+        elif interval == 'weekly':
+            next_business_date = next_week_business_day(start_date)
 
 
 # ticker_list_etf             = ['SPY', 'QQQ', 'DIA', 'SQQQ', 'SPXU', 'SDS', 'SH', 'UPRO']
@@ -78,7 +111,7 @@ ticker_list_delta = ['UPST', 'HGV', 'APHA', 'FVRR', 'ADBE', 'AI']
 ################################################################################
 API_KEY='XYF81MAS06D29A24'
 
-option=1
+option=4
 print('Select Options below:' + str(option))
 
 ## DEFAULT ##  for Multiple Ticker list, and for a given DATE, usually today's
@@ -94,25 +127,7 @@ if option == 1:
         print(str(datetime.datetime.now()) + ' : . . . sleeping')
         time.sleep(25)
 
-
-# use this for newly monitored ticker List ##  for Multiple Ticker list
 elif option == 2:
-
-    ticker_list = [ticker_list_new]
-
-    for sub_ticker_list in ticker_list:
-        for ticker in sub_ticker_list:
-            process_data_for(ticker, api_key=API_KEY, interval='daily', date=None)
-            # process_data_for(ticker, api_key=API_KEY, interval='daily', date='2021-07-07')
-            # update_price_volume_data_for(ticker, api_key=API_KEY, interval='daily', date='2021-07-07')
-            # update_price_volume_data_for(ticker, api_key=API_KEY, interval='daily', date=date)
-            # process_rsi_data_for(ticker, api_key=API_KEY, interval='daily', date=None)
-            # process_rsi_data_for(ticker, api_key=API_KEY, interval='daily', date='2021-07-13')
-            # print(str(datetime.datetime.now()) + ' : sleeping for 1 min')
-            # time.sleep(60)
-
-
-elif option == 3:
 
         # process_data_for("UPST", api_key=API_KEY, interval='weekly', date=None)
         process_data_for("UPST", api_key=API_KEY, interval='daily', date=None)
@@ -120,7 +135,10 @@ elif option == 3:
 
 elif option == 4:
 
-        generate_signal(date='2021-07-16', interval='daily')
+        # generate_signal(interval='weekly', start_date='2020-01-03', end_date='2020-12-25')
+        # generate_signal(interval='daily', start_date='2020-01-03', end_date='2020-12-25')
+        # generate_signal(interval='daily', start_date='2020-12-31', end_date='2021-07-20')
+        generate_signal(interval='daily', start_date='2020-12-31', end_date='2021-07-20')
         # generate_signal(date=None, interval='weekly')
 
 

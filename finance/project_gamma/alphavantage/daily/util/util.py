@@ -61,6 +61,18 @@ def next_business_day(input_date):
     return temp_day
 
 
+def next_week_business_day(input_date):
+    temp_day = datetime.datetime.strptime(str(input_date), '%Y-%m-%d').date() + datetime.timedelta(days=7)
+    # while True:
+    #     if calendar.is_business_day(temp_day):
+    #         break
+    #         # print(datetime.datetime.strptime(datetime.datetime.now().date(), '%Y-%m-%d').date())
+    #     else:
+    #         temp_day = datetime.datetime.strptime(str(temp_day), '%Y-%m-%d').date() + datetime.timedelta(days=1)
+    #
+    return temp_day
+
+
 def previous_business_day(input_date):
     temp_day = datetime.datetime.strptime(str(input_date), '%Y-%m-%d').date() + datetime.timedelta(days=-1)
     while True:

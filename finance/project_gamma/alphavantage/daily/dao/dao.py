@@ -232,7 +232,7 @@ def get_tickers(last_run_date):
 
     if last_run_date == None:
         last_run_date = last_business_day(date=None)
-    sql = """select ticker from public."WatchList" where daily_last_run_date < %s order by seq ;"""
+    sql = """select ticker from public."WatchList" where daily_last_run_date < %s order by priority ;"""
 
     conn = None
     try:
