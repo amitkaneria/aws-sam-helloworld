@@ -35,7 +35,7 @@ def process_signals(start_date, end_date, method, buy_sell, interval='daily'):
                     SELECT A.ticker, B.date, 'buy', 'EMA_21', 'EMA 21 crossing this week price for potential buy signal, please verify with other technicals and material news, ratings changes', B.close
                     FROM public."Weekly_Data" A, public."Weekly_Data" B
                     WHERE A.ticker = B.ticker AND A.date = %s AND B.date = %s
-                        AND A.close < A.ema21  AND B.high > B.ema21
+                        AND A.close < A.ema21  AND B.close > B.ema21
                     ON CONFLICT (ticker,date,method)
                     DO NOTHING
                     ;"""
@@ -44,7 +44,7 @@ def process_signals(start_date, end_date, method, buy_sell, interval='daily'):
                     SELECT A.ticker, B.date, 'sell', 'EMA_21', 'EMA 21 crossing this week price for potential sell signal, please verify with other technicals and material news, ratings changes', B.close
                     FROM public."Weekly_Data" A, public."Weekly_Data" B
                     WHERE A.ticker = B.ticker AND A.date = %s AND B.date = %s
-                        AND A.close > A.ema21  AND B.low < B.ema21
+                        AND A.close > A.ema21  AND B.close < B.ema21
                     ON CONFLICT (ticker,date,method)
                     DO NOTHING
                     ;"""
@@ -98,7 +98,7 @@ def process_signals(start_date, end_date, method, buy_sell, interval='daily'):
                     SELECT A.ticker, B.date, 'buy', 'EMA_21', 'EMA 21 crossing this week price for potential buy signal, please verify with other technicals and material news, ratings changes', B.close
                     FROM public."Daily_Data" A, public."Daily_Data" B
                     WHERE A.ticker = B.ticker AND A.date = %s AND B.date = %s
-                        AND A.close < A.ema21  AND B.high > B.ema21
+                        AND A.close < A.ema21  AND B.close > B.ema21
                     ON CONFLICT (ticker,date,method)
                     DO NOTHING
                     ;"""
@@ -107,7 +107,7 @@ def process_signals(start_date, end_date, method, buy_sell, interval='daily'):
                     SELECT A.ticker, B.date, 'sell', 'EMA_21', 'EMA 21 crossing this week price for potential sell signal, please verify with other technicals and material news, ratings changes', B.close
                     FROM public."Daily_Data" A, public."Daily_Data" B
                     WHERE A.ticker = B.ticker AND A.date = %s AND B.date = %s
-                        AND A.close > A.ema21  AND B.low < B.ema21
+                        AND A.close > A.ema21  AND B.close < B.ema21
                     ON CONFLICT (ticker,date,method)
                     DO NOTHING
                     ;"""
@@ -142,17 +142,18 @@ def process_signals(start_date, end_date, method, buy_sell, interval='daily'):
         sql = """INSERT INTO public."Daily_Signals"(ticker, date, buy_sell, method, note, reco_price)
                     SELECT A.ticker, B.date, 'buy', 'AMIT.SP', 'Stochastic crossover with either RSI oversold, or in uptrend with price above EMA-21', B.close
                     FROM public."Daily_Data" A, public."Daily_Data" B
-                    where A.ticker = B.ticker and A.date = %s and B.date = %s
-                    and A.stochs_delta < 0 and B.stochs_delta > 0 AND (A.rsi < 30 OR (B.ema21 > B.close OR B.ema8 > B.ema12)) 
+                    WHERE A.ticker = B.ticker and A.date = %s and B.date = %s
+                        and A.stochs_delta < 0 and B.stochs_delta > 0 AND ((A.rsi < 30 and B.rsi > A.rsi) OR (B.ema21 > B.close OR B.ema8 > B.ema12)) 
                     ON CONFLICT (ticker,date,method)
                     DO NOTHING
                     ;"""
     elif option == 'daily_sell_amit.special':
         sql = """INSERT INTO public."Daily_Signals"(ticker, date, buy_sell, method, note, reco_price)
-                    SELECT A.ticker, B.date, 'sell', 'AMIT.SP', 'stoch-slow 5-3-3 indicates signal, Potential trend change. Please verify with other technicals as RSI/ EMA 21/ 8-12 crossover and material news, ratings changes', B.close
+                    SELECT A.ticker, B.date, 'sell', 'AMIT.SP', 'Stochastic crossover with either RSI oversold, or in uptrend with price above EMA-21', B.close
                     FROM public."Daily_Data" A, public."Daily_Data" B
-                    where A.ticker = B.ticker and A.date = %s and B.date = %s
-                    and A.stochs_delta > 0 and B.stochs_delta < 0 
+                    WHERE A.ticker = B.ticker and A.date = %s and B.date = %s
+                        and A.stochs_slowk < B.stochs_slowk AND A.stochs_slowd < B.stochs_slowd 
+                        AND B.ema21 > B.close OR B.ema8 < B.ema12 
                     ON CONFLICT (ticker,date,method)
                     DO NOTHING
                     ;"""

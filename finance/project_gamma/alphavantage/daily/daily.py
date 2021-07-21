@@ -51,8 +51,8 @@ def generate_signal(interval='daily', start_date='2020-12-31', end_date=None):
         process_signals(start_date, end_date=next_business_date, interval=interval, method='ema.21', buy_sell='sell')
 
         ## Special Indicators
-        process_signals(start_date, end_date=next_business_date, interval=interval, method='amit.special', buy_sell='buy')
-        process_signals(start_date, end_date=next_business_date, interval=interval, method='amit.special', buy_sell='sell')
+        # process_signals(start_date, end_date=next_business_date, interval=interval, method='amit.special', buy_sell='buy')
+        # process_signals(start_date, end_date=next_business_date, interval=interval, method='amit.special', buy_sell='sell')
 
         start_date = next_business_date
         if interval == 'daily':
@@ -130,18 +130,18 @@ if option == 1:
 elif option == 2:
 
         # process_data_for("UPST", api_key=API_KEY, interval='weekly', date=None)
-        process_data_for("UPST", api_key=API_KEY, interval='daily', date=None)
+    process_data_for("UPST", api_key=API_KEY, interval='daily', date=None)
 
+## Daily Analytics Run
+elif option == 3:
+    generate_signal(interval='daily', start_date=str(previous_business_day(last_business_day(None))), end_date=str(last_business_day(None)))
 
 elif option == 4:
-
-        # generate_signal(interval='weekly', start_date='2020-01-03', end_date='2020-12-25')
-        # generate_signal(interval='daily', start_date='2020-01-03', end_date='2020-12-25')
-        # generate_signal(interval='daily', start_date='2020-12-31', end_date='2021-07-20')
-        generate_signal(interval='daily', start_date='2020-12-31', end_date='2021-07-20')
-        # generate_signal(date=None, interval='weekly')
-
+    # generate_signal(interval='weekly', start_date='2020-01-03', end_date='2020-12-25')
+    # generate_signal(interval='daily', start_date='2020-01-03', end_date='2020-12-25')
+    # generate_signal(interval='daily', start_date='2020-12-31', end_date='2021-07-20')
+    generate_signal(interval='daily', start_date='2020-12-31', end_date='2021-07-20')
+    # generate_signal(date=None, interval='weekly')
 
 else:
-
-    print('Please correct options: 1, 2')
+    print('Please correct options: 1, 2, 3, 4')

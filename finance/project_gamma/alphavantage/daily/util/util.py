@@ -113,4 +113,4 @@ def previous_week_business_day(input_date):
 # print(date_business_day(datetime.date.today()))
 
 # print(last_business_day('2021-07-18'))
-# print(last_business_day(None))
+print(previous_business_day(last_business_day(None)))
