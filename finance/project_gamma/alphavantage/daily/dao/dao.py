@@ -11,6 +11,9 @@ def insert_daily_price_volume(ticker, date, interval, open, high, low, close, vo
     elif interval == 'weekly':
         sql = """INSERT INTO \"Weekly_Data\"(open, high, low, close, volume, ticker, date)
                  VALUES(%s, %s, %s, %s, %s, %s, %s) ;"""
+    elif interval == '60min':
+        sql = """INSERT INTO \"Hourly_Data\"(open, high, low, close, volume, ticker, datetime)
+                 VALUES(%s, %s, %s, %s, %s, %s, %s) ;"""
 
     conn = None
     try:
@@ -228,11 +231,15 @@ def update_daily_technicals_ema(ticker, date, interval, ema_key, ema_value):
 
 
 
-def get_tickers(last_run_date):
+def get_tickers(last_run_date, priority=None):
 
     if last_run_date == None:
         last_run_date = last_business_day(date=None)
-    sql = """select ticker from public."WatchList" where daily_last_run_date < %s order by priority ;"""
+
+    if priority == None:
+        sql = """select ticker from public."WatchList" where daily_last_run_date < %s order by priority ;"""
+    else:
+        sql = """select ticker from public."WatchList" where hourly_last_run_date < %s AND priority = %s order by priority ;"""
 
     conn = None
     try:
@@ -244,7 +251,10 @@ def get_tickers(last_run_date):
             database="Gamma", user='postgres', password='admin', host='127.0.0.1', port= '5432'
         )
         cur = conn.cursor()
-        cur.execute(sql, (last_run_date,))
+        if priority == None:
+            cur.execute(sql, (last_run_date,))
+        else:
+            cur.execute(sql, (last_run_date, priority))
         ticker_list = []
         rows = cur.fetchall()
         for row in rows:
@@ -343,6 +353,9 @@ def update_status(ticker, date, interval):
                      WHERE ticker=%s;"""
     elif interval == 'weekly':
         sql = """UPDATE \"WatchList\" SET weekly_last_run_date=%s
+                     WHERE ticker=%s;"""
+    elif interval == 'hourly':
+        sql = """UPDATE \"WatchList\" SET hourly_last_run_date=%s
                      WHERE ticker=%s;"""
 
     conn = None

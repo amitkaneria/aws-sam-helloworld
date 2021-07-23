@@ -1,25 +1,43 @@
 import time
 import datetime
-from finance.project_gamma.alphavantage.daily.api.api import process_price_volume_data_for, process_stochastic_data_for, process_ema8_data_for, process_ema12_data_for, process_ema21_data_for, update_price_volume_data_for, process_rsi_data_for
+from finance.project_gamma.alphavantage.daily.api.api import process_price_volume_data_for, process_stochastic_data_for, process_ema8_data_for, process_ema12_data_for, process_ema21_data_for, update_price_volume_data_for, process_rsi_data_for, process_intraday_price_volume_data_for
 from finance.project_gamma.alphavantage.daily.util.util import is_valid_date, last_business_day, date_business_day, previous_business_day, next_business_day, previous_week_business_day, next_week_business_day
 from finance.project_gamma.alphavantage.daily.dao.dao import update_status, insert_status, get_status, get_tickers
 from finance.project_gamma.alphavantage.daily.dao.data_analytics_dao import process_signals
 
 def process_data_for(ticker, api_key, interval, date):
+
     print(str(datetime.datetime.now()) + ' : ##### ##### '+ ticker + ' ##### #####')
-    process_price_volume_data_for(ticker, api_key=API_KEY, interval=interval, date=date)
+
+    ## Pricing Data
+    if interval == 'daily' or interval == 'weekly':
+        process_price_volume_data_for(ticker, api_key=API_KEY, interval=interval, date=date)
+    elif interval == '60min':
+        process_intraday_price_volume_data_for(ticker, api_key=API_KEY, interval=interval, date=date)
+
+    ## Stochastic Daya
     process_stochastic_data_for(ticker, api_key=API_KEY, interval=interval, date=date)
+
+    ## EMA-8 Data
     process_ema8_data_for(ticker, api_key=API_KEY, interval=interval, date=date)
+
+    ## EMA-12 Data
     process_ema12_data_for(ticker, api_key=API_KEY, interval=interval, date=date)
+
     print(str(datetime.datetime.now()) + ' : . . . sleeping')
     time.sleep(20)
+
+    ## EMA-21 Data
     process_ema21_data_for(ticker, api_key=API_KEY, interval=interval, date=date)
+
+    ## RSI Data
     process_rsi_data_for(ticker, api_key=API_KEY, interval=interval, date=date)
     ###### process_ema200_data_for(ticker, api_key=API_KEY, interval=interval, date=date)
 
     ###### Update DB Status
     # insert_status(ticker, interval=interval, date=datetime.datetime.now().strftime("%Y-%m-%d"))
     update_status(ticker, interval=interval, date=datetime.datetime.now().strftime("%Y-%m-%d"))
+
 
 def generate_signal(interval='daily', start_date='2020-12-31', end_date=None):
 
@@ -101,9 +119,11 @@ def generate_signal(interval='daily', start_date='2020-12-31', end_date=None):
 #9 - meme
 #10 - bitcoin
 #11 -
+#12 - finance
+#13 - tech blue chips
 
-ticker_list_new     = ['AA', 'HDB', 'SCHW', 'ERIC', 'STT', 'BNTX']
-ticker_list_new1    = ['UBS', 'CMG', 'TRV', 'IBKR', 'TER', 'PCAR', 'HAL', 'ALLY', 'CIT', 'JNJ', 'ANTM', 'CSX', 'EFX', 'NVS', 'TXN', 'WHR']
+
+ticker_list_new     = ['SCHW', 'BNTX', 'CMG', 'JNJ', 'EFX', 'NVS', 'TXN', 'WHR']
 
 #7/14
 ticker_list_delta = ['UPST', 'HGV', 'APHA', 'FVRR', 'ADBE', 'AI']
@@ -111,14 +131,14 @@ ticker_list_delta = ['UPST', 'HGV', 'APHA', 'FVRR', 'ADBE', 'AI']
 ################################################################################
 API_KEY='XYF81MAS06D29A24'
 
-option=4
+option=1
 print('Select Options below:' + str(option))
 
 ## DEFAULT ##  for Multiple Ticker list, and for a given DATE, usually today's
 ## This updates all data for today's date (or any missing date data)
 if option == 1:
 
-    ticker_list_db = get_tickers(last_run_date=None)
+    ticker_list_db = get_tickers(last_run_date=None, priority=None)
     print("Running for List:" + str(ticker_list_db))
     for ticker in ticker_list_db:
         # process_data_for(ticker, api_key=API_KEY, interval='daily', date='2021-07-16')
@@ -127,21 +147,29 @@ if option == 1:
         print(str(datetime.datetime.now()) + ' : . . . sleeping')
         time.sleep(25)
 
-elif option == 2:
-
-        # process_data_for("UPST", api_key=API_KEY, interval='weekly', date=None)
-    process_data_for("UPST", api_key=API_KEY, interval='daily', date=None)
+    #Daily Analytics Run
+    generate_signal(interval='daily', start_date=str(previous_business_day(last_business_day(None))), end_date=str(last_business_day(None)))
 
 ## Daily Analytics Run
-elif option == 3:
+elif option == 2:
     generate_signal(interval='daily', start_date=str(previous_business_day(last_business_day(None))), end_date=str(last_business_day(None)))
+
+elif option == 3:
+
+        # process_data_for("UPST", api_key=API_KEY, interval='weekly', date=None)
+    process_data_for("BNTX", api_key=API_KEY, interval='daily', date=None)
 
 elif option == 4:
     # generate_signal(interval='weekly', start_date='2020-01-03', end_date='2020-12-25')
-    # generate_signal(interval='daily', start_date='2020-01-03', end_date='2020-12-25')
-    # generate_signal(interval='daily', start_date='2020-12-31', end_date='2021-07-20')
     generate_signal(interval='daily', start_date='2020-12-31', end_date='2021-07-20')
-    # generate_signal(date=None, interval='weekly')
+
+elif option == 5:
+    ticker_list_db = get_tickers(last_run_date='2021-07-21', priority=1)
+    print("Running for List:" + str(ticker_list_db))
+
 
 else:
-    print('Please correct options: 1, 2, 3, 4')
+    print('Please select correct options: 1, 2, 3, 4')
+
+## Delete sell data for
+## 2021-07-08, 2021-07-19

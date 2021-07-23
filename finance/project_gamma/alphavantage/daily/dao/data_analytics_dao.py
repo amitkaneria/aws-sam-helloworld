@@ -116,7 +116,7 @@ def process_signals(start_date, end_date, method, buy_sell, interval='daily'):
                     SELECT A.ticker, B.date, 'buy', 'STOCH_SLOW', 'stoch-slow 5-3-3 indicated signal, Potential trend change. Please verify with other technicals as RSI/ EMA 21/ 8-12 crossover and material news, ratings changes', B.close
                     FROM public."Daily_Data" A, public."Daily_Data" B
                     WHERE A.ticker = B.ticker AND A.date = %s AND B.date = %s
-                        AND A.stochs_delta < 0 and B.stochs_delta > 0 
+                        AND ((A.stochs_delta < 0 and B.stochs_delta > 0) OR ((B.stochs_delta - A.stochs_delta) > 10))
                     ON CONFLICT (ticker,date,method)
                     DO NOTHING
                     ;"""
@@ -124,8 +124,8 @@ def process_signals(start_date, end_date, method, buy_sell, interval='daily'):
         sql = """INSERT INTO public."Daily_Signals"(ticker, date, buy_sell, method, note, reco_price)
                     SELECT A.ticker, B.date, 'sell', 'STOCH_SLOW', 'stoch-slow 5-3-3 indicates signal, Potential trend change. Please verify with other technicals as RSI/ EMA 21/ 8-12 crossover and material news, ratings changes', B.close
                     FROM public."Daily_Data" A, public."Daily_Data" B
-                    where A.ticker = B.ticker and A.date = %s and B.date = %s
-                    and A.stochs_delta > 0 and B.stochs_delta < 0 
+                    WHERE A.ticker = B.ticker and A.date = %s and B.date = %s
+                    	AND ((A.stochs_delta > 0 and B.stochs_delta < 0) OR ((A.stochs_delta - B.stochs_delta) > 10)) 
                     ON CONFLICT (ticker,date,method)
                     DO NOTHING
                     ;"""

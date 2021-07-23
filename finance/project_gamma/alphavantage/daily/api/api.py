@@ -20,6 +20,46 @@ def process_price_volume_data_for(ticker, api_key, interval, date):
     elif interval == 'weekly':
         data = response_data['Weekly Time Series']
 
+    print(str(datetime.datetime.now()) + ' : . Price/Volume data')
+    if is_valid_date(date):
+        try:
+            try:
+                insert_daily_price_volume(ticker, date, interval, data[date]['1. open'], data[date]['2. high'], data[date]['3. low'], data[date]['4. close'], data[date]['5. volume'])
+            except:
+                new_date = date+" 16:00:01"
+                insert_daily_price_volume(ticker, new_date, interval, data[new_date]['1. open'], data[new_date]['2. high'], data[new_date]['3. low'], data[new_date]['4. close'], data[new_date]['5. volume'])
+        except:
+            print(str(datetime.datetime.now()) + " : WARNING --- Ticker: " + ticker + " Date: " + date + " Price/Volume data(" + url + ") NOT FOUND!!!... Moving to the next one!!!")
+
+    else:
+        last_run = get_status(ticker, interval=interval)
+        for date in data:
+            try:
+                new_date = datetime.datetime.strptime(date, '%Y-%m-%d').date()
+            except:
+                new_date = datetime.datetime.strptime(date, '%Y-%m-%d %H:%M:%S').date()
+
+            start_date = datetime.datetime.strptime('2019-12-31', '%Y-%m-%d').date()
+            if last_run == None:
+                last_run = start_date
+
+            if new_date > start_date and new_date > last_run:
+                insert_daily_price_volume(ticker, date, interval, data[date]['1. open'], data[date]['2. high'], data[date]['3. low'], data[date]['4. close'], data[date]['5. volume'])
+            else:
+                break
+
+def process_intraday_price_volume_data_for(ticker, api_key, interval, date):
+
+    if interval == '60min':
+        interval_enum = 'TIME_SERIES_INTRADAY'
+
+    if interval == '60min':
+        url = 'https://www.alphavantage.co/query?function={0}&symbol={1}&interval={2}&apikey={3}'.format(interval_enum, ticker, time_period, api_key)
+
+    r = requests.get(url)
+    response_data = r.json()
+    if interval == '60min':
+        data = response_data['Time Series (60min)']
 
     print(str(datetime.datetime.now()) + ' : . Price/Volume data')
     if is_valid_date(date):
@@ -48,6 +88,7 @@ def process_price_volume_data_for(ticker, api_key, interval, date):
                 insert_daily_price_volume(ticker, date, interval, data[date]['1. open'], data[date]['2. high'], data[date]['3. low'], data[date]['4. close'], data[date]['5. volume'])
             else:
                 break
+
 
 def update_price_volume_data_for(ticker, api_key, interval, date):
 
