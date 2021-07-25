@@ -1,7 +1,7 @@
 import time
 import datetime
 from finance.project_gamma.alphavantage.daily.api.api import process_price_volume_data_for, process_stochastic_data_for, process_ema8_data_for, process_ema12_data_for, process_ema21_data_for, update_price_volume_data_for, process_rsi_data_for, process_intraday_price_volume_data_for
-from finance.project_gamma.alphavantage.daily.util.util import is_valid_date, last_business_day, date_business_day, previous_business_day, next_business_day, previous_week_business_day, next_week_business_day
+from finance.project_gamma.alphavantage.daily.util.util import is_valid_date, last_business_day, date_business_day, previous_business_day, next_business_day, previous_week_business_day, next_week_business_day, friday_before_previous_friday, previous_friday
 from finance.project_gamma.alphavantage.daily.dao.dao import update_status, insert_status, get_status, get_tickers
 from finance.project_gamma.alphavantage.daily.dao.data_analytics_dao import process_signals
 
@@ -43,8 +43,8 @@ def generate_signal(interval='daily', start_date='2020-12-31', end_date=None):
 
     if end_date == None:
         end_date = datetime.date.today()
-    else:
-        end_date = datetime.datetime.strptime(end_date, '%Y-%m-%d').date()
+    # else:
+    #     end_date = datetime.datetime.strptime(end_date, '%Y-%m-%d').date()
 
     if interval == 'daily':
         next_business_date = next_business_day(start_date)
@@ -117,7 +117,7 @@ if option == 1:
         time.sleep(25)
 
     # Daily Analytics Run
-    generate_signal(interval='daily', start_date=str(previous_business_day(last_business_day(None))), end_date=str(last_business_day(None)))
+    generate_signal(interval='daily', start_date=str(previous_business_day(last_business_day(None))), end_date=None)
 
     ticker_list_db = get_tickers(interval='weekly', last_run_date=None, priority=None)
     print("Running Weekly for List:" + str(ticker_list_db))
@@ -129,9 +129,12 @@ if option == 1:
         time.sleep(25)
 
 
+    # Weekly Analytics Run
+    generate_signal(interval='weekly', start_date=friday_before_previous_friday(), end_date=previous_friday())
+
 ## Daily Analytics Run
 elif option == 2:
-    generate_signal(interval='daily', start_date=str(previous_business_day(last_business_day(None))), end_date=str(last_business_day(None)))
+    generate_signal(interval='daily', start_date=friday_before_previous_friday(), end_date=last_business_day())
 
 
 elif option == 3:

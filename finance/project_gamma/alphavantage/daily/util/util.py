@@ -108,6 +108,20 @@ def previous_friday():
 
     return last_friday
 
+
+def friday_before_previous_friday():
+
+    current_time = datetime.datetime.now()
+
+    # get friday, one week ago, at 16 o'clock
+    last_friday = (current_time.date()
+               - datetime.timedelta(days=current_time.weekday())
+               + datetime.timedelta(days=4, weeks=-1))
+
+    friday_before_previous_friday = last_friday + datetime.timedelta(days=-7)
+
+    return friday_before_previous_friday
+
 # business_day = '2020-12-31'
 # next_business_day = next_business_day(business_day)
 # print(next_business_day)
@@ -126,4 +140,4 @@ def previous_friday():
 # print(last_business_day('2021-07-18'))
 # print(previous_business_day(last_business_day(None)))
 
-
+# print(friday_before_previous_friday())
