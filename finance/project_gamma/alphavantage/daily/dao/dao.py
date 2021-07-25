@@ -1,6 +1,6 @@
 import datetime
 import psycopg2
-from finance.project_gamma.alphavantage.daily.util.util import is_valid_date, next_business_day, previous_business_day, previous_week_business_day, last_business_day, date_business_day
+from finance.project_gamma.alphavantage.daily.util.util import is_valid_date, next_business_day, previous_business_day, previous_week_business_day, last_business_day, date_business_day, previous_friday
 
 
 def insert_daily_price_volume(ticker, date, interval, open, high, low, close, volume):
@@ -231,15 +231,31 @@ def update_daily_technicals_ema(ticker, date, interval, ema_key, ema_value):
 
 
 
-def get_tickers(last_run_date, priority=None):
+def get_tickers(interval, last_run_date, priority=None):
 
-    if last_run_date == None:
+    if interval == 'weekly' and last_run_date == None:
+        last_run_date = previous_friday()
+    elif interval == 'daily':
         last_run_date = last_business_day(date=None)
+    else:
+        last_run_date = last_run_date
+
+    print('Running for Date: ' + str(last_run_date))
 
     if priority == None:
-        sql = """select ticker from public."WatchList" where daily_last_run_date < %s order by priority ;"""
+        if interval == 'daily':
+            sql = """select ticker from public."WatchList" where daily_last_run_date < %s order by priority ;"""
+        elif interval == 'weekly':
+            sql = """select ticker from public."WatchList" where weekly_last_run_date < %s order by priority ;"""
+        elif interval == '60min':
+            sql = """select ticker from public."WatchList" where hourly_last_run_date < %s order by priority ;"""
     else:
-        sql = """select ticker from public."WatchList" where hourly_last_run_date < %s AND priority = %s order by priority ;"""
+        if interval == 'daily':
+            sql = """select ticker from public."WatchList" where daily_last_run_date < %s AND priority = %s order by priority ;"""
+        elif interval == 'weekly':
+            sql = """select ticker from public."WatchList" where weekly_last_run_date < %s AND priority = %s order by priority ;"""
+        elif interval == '60min':
+            sql = """select ticker from public."WatchList" where hourly_last_run_date < %s AND priority = %s order by priority ;"""
 
     conn = None
     try:
