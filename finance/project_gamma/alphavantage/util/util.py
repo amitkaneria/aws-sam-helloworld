@@ -1,7 +1,6 @@
 from dateutil.parser import parse
 from business.calendar import Calendar
 import datetime
-# from datetime import datetime
 
 calendar = Calendar(
     working_days=["monday", "tuesday", "wednesday", "thursday", "friday"],
@@ -12,7 +11,6 @@ calendar = Calendar(
     extra_working_dates=[],
 )
 
-
 def is_valid_date(date):
     if date:
         try:
@@ -21,7 +19,6 @@ def is_valid_date(date):
         except:
             return False
     return False
-
 
 
 def last_business_day(date=None):
@@ -36,7 +33,6 @@ def last_business_day(date=None):
     while True:
         if calendar.is_business_day(temp_day):
             break
-            # print(datetime.datetime.strptime(datetime.datetime.now().date(), '%Y-%m-%d').date())
         else:
             temp_day = datetime.datetime.strptime(str(temp_day), '%Y-%m-%d').date() + datetime.timedelta(days=-1)
 
@@ -54,7 +50,6 @@ def next_business_day(input_date):
     while True:
         if calendar.is_business_day(temp_day):
             break
-            # print(datetime.datetime.strptime(datetime.datetime.now().date(), '%Y-%m-%d').date())
         else:
             temp_day = datetime.datetime.strptime(str(temp_day), '%Y-%m-%d').date() + datetime.timedelta(days=1)
 
@@ -63,13 +58,6 @@ def next_business_day(input_date):
 
 def next_week_business_day(input_date):
     temp_day = datetime.datetime.strptime(str(input_date), '%Y-%m-%d').date() + datetime.timedelta(days=7)
-    # while True:
-    #     if calendar.is_business_day(temp_day):
-    #         break
-    #         # print(datetime.datetime.strptime(datetime.datetime.now().date(), '%Y-%m-%d').date())
-    #     else:
-    #         temp_day = datetime.datetime.strptime(str(temp_day), '%Y-%m-%d').date() + datetime.timedelta(days=1)
-    #
     return temp_day
 
 
@@ -78,7 +66,6 @@ def previous_business_day(input_date):
     while True:
         if calendar.is_business_day(temp_day):
             break
-            # print(datetime.datetime.strptime(datetime.datetime.now().date(), '%Y-%m-%d').date())
         else:
             temp_day = datetime.datetime.strptime(str(temp_day), '%Y-%m-%d').date() + datetime.timedelta(days=-1)
 
@@ -90,7 +77,6 @@ def previous_week_business_day(input_date):
     while True:
         if calendar.is_business_day(temp_day):
             break
-            # print(datetime.datetime.strptime(datetime.datetime.now().date(), '%Y-%m-%d').date())
         else:
             temp_day = datetime.datetime.strptime(str(temp_day), '%Y-%m-%d').date() + datetime.timedelta(days=-1)
 
@@ -104,11 +90,12 @@ def previous_friday(input_date=None):
     else:
         current_time = datetime.datetime.strptime(str(input_date), '%Y-%m-%d').date()
 
+    ## Does Last Friday fall in this week ??
     if current_time.weekday() >= 4:
-        # get friday, one week ago, at 16 o'clock
         last_friday = (datetime.datetime.strptime(str(current_time), '%Y-%m-%d').date()
                        - datetime.timedelta(days=current_time.weekday() - 4))
-        # + datetime.timedelta(days=4, weeks=-1))
+
+    ## Or if Friday falls in the week before ??
     else:
         last_friday = (datetime.datetime.strptime(str(current_time), '%Y-%m-%d').date()
                        - datetime.timedelta(days=current_time.weekday())
@@ -124,16 +111,16 @@ def friday_before_previous_friday(input_date=None):
     else:
         current_time = datetime.datetime.strptime(str(input_date), '%Y-%m-%d').date()
 
+    ## Does Last Friday fall in this week ??
     if current_time.weekday() >= 4:
-        # get friday, one week ago, at 16 o'clock
         last_friday = (datetime.datetime.strptime(str(current_time), '%Y-%m-%d').date()
                        - datetime.timedelta(days=current_time.weekday() - 4))
-        # + datetime.timedelta(days=4, weeks=-1))
+
+    ## Or if Friday falls in the week before ??
     else:
         last_friday = (datetime.datetime.strptime(str(current_time), '%Y-%m-%d').date()
                        - datetime.timedelta(days=current_time.weekday())
                        + datetime.timedelta(days=4, weeks=-1))
-
 
     friday_before_previous_friday = last_friday + datetime.timedelta(days=-7)
 
@@ -142,26 +129,26 @@ def friday_before_previous_friday(input_date=None):
 # business_day = '2020-12-31'
 # next_business_day = next_business_day(business_day)
 # print(next_business_day)
-
+#
 # business_day = '2020-12-31'
 # previous_business_day = previous_business_day(business_day)
 # print(previous_business_day)
-
+#
 # business_day = '2020-12-31'
 # previous_week_business_day = previous_week_business_day(business_day)
 # print(previous_week_business_day)
-
+#
 # print(date_business_day('2021-07-18'))
 # print(date_business_day(datetime.date.today()))
-
+#
 # print(last_business_day('2021-07-18'))
 # print(previous_business_day(last_business_day(None)))
-
-
-print(previous_friday())
-print(previous_friday(input_date='2021-07-23'))
-print(previous_friday(input_date='2021-07-22'))
-
-print(friday_before_previous_friday())
-print(friday_before_previous_friday(input_date='2021-07-23'))
-print(friday_before_previous_friday(input_date='2021-07-22'))
+#
+#
+# print(previous_friday())
+# print(previous_friday(input_date='2021-07-23'))
+# print(previous_friday(input_date='2021-07-22'))
+#
+# print(friday_before_previous_friday())
+# print(friday_before_previous_friday(input_date='2021-07-23'))
+# print(friday_before_previous_friday(input_date='2021-07-22'))

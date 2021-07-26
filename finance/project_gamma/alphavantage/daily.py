@@ -1,9 +1,11 @@
 import time
 import datetime
-from finance.project_gamma.alphavantage.daily.api.api import process_price_volume_data_for, process_stochastic_data_for, process_ema8_data_for, process_ema12_data_for, process_ema21_data_for, update_price_volume_data_for, process_rsi_data_for, process_intraday_price_volume_data_for
-from finance.project_gamma.alphavantage.daily.util.util import is_valid_date, last_business_day, date_business_day, previous_business_day, next_business_day, previous_week_business_day, next_week_business_day, friday_before_previous_friday, previous_friday
-from finance.project_gamma.alphavantage.daily.dao.dao import update_status, insert_status, get_status, get_tickers
-from finance.project_gamma.alphavantage.daily.dao.data_analytics_dao import process_signals
+from finance.project_gamma.alphavantage.api.api import process_price_volume_data_for, process_stochastic_data_for, process_ema8_data_for, \
+    process_ema12_data_for, process_ema21_data_for, process_rsi_data_for, process_intraday_price_volume_data_for
+from finance.project_gamma.alphavantage.util.util import last_business_day, previous_business_day, next_business_day, \
+    next_week_business_day, friday_before_previous_friday, previous_friday
+from finance.project_gamma.alphavantage.dao.dao import update_status, get_tickers
+from finance.project_gamma.alphavantage.dao.data_analytics_dao import process_signals
 
 def process_data_for(ticker, api_key, interval, date):
 
@@ -43,8 +45,8 @@ def generate_signal(interval='daily', start_date='2020-12-31', end_date=None):
 
     if end_date == None:
         end_date = datetime.date.today()
-    # else:
-    #     end_date = datetime.datetime.strptime(end_date, '%Y-%m-%d').date()
+    else:
+        end_date = datetime.datetime.strptime(str(end_date), '%Y-%m-%d').date()
 
     if interval == 'daily':
         next_business_date = next_business_day(start_date)
@@ -145,7 +147,8 @@ elif option == 3:
 
 elif option == 4:
     # generate_signal(interval='weekly', start_date='2020-01-03', end_date='2020-12-25')
-    generate_signal(interval='daily', start_date='2020-12-31', end_date='2021-07-20')
+    # generate_signal(interval='daily', start_date='2020-12-31', end_date=None)
+    generate_signal(interval='daily', start_date='2020-12-31', end_date='2021-07-23')
 
 
 elif option == 5:

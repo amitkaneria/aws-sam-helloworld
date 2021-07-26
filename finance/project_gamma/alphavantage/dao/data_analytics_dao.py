@@ -1,6 +1,6 @@
 import datetime
 import psycopg2
-from finance.project_gamma.alphavantage.daily.util.util import is_valid_date, next_business_day, previous_business_day, previous_week_business_day
+
 
 def process_signals(start_date, end_date, method, buy_sell, interval='daily'):
 

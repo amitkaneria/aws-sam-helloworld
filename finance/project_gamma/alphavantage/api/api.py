@@ -1,7 +1,7 @@
 import requests
 import datetime
-from finance.project_gamma.alphavantage.daily.dao.dao import insert_daily_price_volume, insert_daily_technicals_stochs, update_daily_price_volume, update_daily_technicals_stochs, update_daily_technicals_ema, update_daily_technicals_rsi, get_status
-from finance.project_gamma.alphavantage.daily.util.util import is_valid_date
+from finance.project_gamma.alphavantage.dao.dao import insert_daily_price_volume, update_daily_price_volume, update_daily_technicals_stochs, update_daily_technicals_ema, update_daily_technicals_rsi, get_status
+from finance.project_gamma.alphavantage.util.util import is_valid_date
 
 
 def process_price_volume_data_for(ticker, api_key, interval, date):

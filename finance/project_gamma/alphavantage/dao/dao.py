@@ -1,6 +1,5 @@
-import datetime
 import psycopg2
-from finance.project_gamma.alphavantage.daily.util.util import is_valid_date, next_business_day, previous_business_day, previous_week_business_day, last_business_day, date_business_day, previous_friday
+from finance.project_gamma.alphavantage.util.util import last_business_day, previous_friday
 
 
 def insert_daily_price_volume(ticker, date, interval, open, high, low, close, volume):
