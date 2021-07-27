@@ -102,6 +102,7 @@ API_KEY='XYF81MAS06D29A24'
 
 option=1
 print('Select Options below:' + str(option))
+print('##### ##### ##### ##### #####')
 
 ## DEFAULT ##  for Multiple Ticker list, and for a given DATE, usually today's
 ## This updates all data for today's date (or any missing date data)
@@ -118,8 +119,12 @@ if option == 1:
         print(str(datetime.datetime.now()) + ' : . . . sleeping')
         time.sleep(25)
 
-    # Daily Analytics Run
-    generate_signal(interval='daily', start_date=str(previous_business_day(last_business_day(None))), end_date=None)
+    if len(ticker_list_db) > 0:
+        # Daily Analytics Run
+        generate_signal(interval='daily', start_date=str(previous_business_day(last_business_day(None))), end_date=None)
+    else:
+        print('NOTE: Analytics is not NOT for empty watch-list')
+    print('##### ##### ##### ##### #####')
 
     ticker_list_db = get_tickers(interval='weekly', last_run_date=None, priority=None)
     print("Running Weekly for List:" + str(ticker_list_db))
@@ -130,9 +135,12 @@ if option == 1:
         print(str(datetime.datetime.now()) + ' : . . . sleeping')
         time.sleep(25)
 
-
-    # Weekly Analytics Run
-    generate_signal(interval='weekly', start_date=friday_before_previous_friday(), end_date=previous_friday())
+    if len(ticker_list_db) > 0:
+        # Weekly Analytics Run
+        generate_signal(interval='weekly', start_date=friday_before_previous_friday(), end_date=previous_friday())
+    else:
+        print('NOTE: Analytics is not NOT for empty watch-list')
+    print('##### ##### ##### ##### #####')
 
 ## Daily Analytics Run
 elif option == 2:
@@ -142,7 +150,8 @@ elif option == 2:
 elif option == 3:
 
         # process_data_for("UPST", api_key=API_KEY, interval='weekly', date=None)
-    process_data_for("BNTX", api_key=API_KEY, interval='daily', date='2021-07-22')
+    # process_data_for("BNTX", api_key=API_KEY, interval='daily', date='2021-07-22')
+    process_data_for(ticker='AMC', api_key=API_KEY, interval='daily', date=None)
 
 
 elif option == 4:
