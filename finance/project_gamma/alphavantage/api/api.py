@@ -4,6 +4,80 @@ from finance.project_gamma.alphavantage.dao.dao import insert_daily_price_volume
 from finance.project_gamma.alphavantage.util.util import is_valid_date
 
 
+def process_data_for(ticker, api_key, interval, date):
+
+    print(str(datetime.datetime.now()) + ' : ##### ##### '+ ticker + ' ##### #####')
+
+    ## Pricing Data
+    if interval == 'daily' or interval == 'weekly':
+        process_price_volume_data_for(ticker, api_key=API_KEY, interval=interval, date=date)
+    elif interval == '60min':
+        process_intraday_price_volume_data_for(ticker, api_key=API_KEY, interval=interval, date=date)
+
+    ## Stochastic Daya
+    process_stochastic_data_for(ticker, api_key=API_KEY, interval=interval, date=date)
+
+    ## EMA-8 Data
+    process_ema8_data_for(ticker, api_key=API_KEY, interval=interval, date=date)
+
+    ## EMA-12 Data
+    process_ema12_data_for(ticker, api_key=API_KEY, interval=interval, date=date)
+
+    print(str(datetime.datetime.now()) + ' : . . . sleeping')
+    time.sleep(20)
+
+    ## EMA-21 Data
+    process_ema21_data_for(ticker, api_key=API_KEY, interval=interval, date=date)
+
+    ## RSI Data
+    process_rsi_data_for(ticker, api_key=API_KEY, interval=interval, date=date)
+    ###### process_ema200_data_for(ticker, api_key=API_KEY, interval=interval, date=date)
+
+    ###### Update DB Status
+    # insert_status(ticker, interval=interval, date=datetime.datetime.now().strftime("%Y-%m-%d"))
+    update_status(ticker, interval=interval, date=datetime.datetime.now().strftime("%Y-%m-%d"))
+
+
+def generate_signal(interval='daily', start_date='2020-12-31', end_date=None):
+
+    if end_date == None:
+        end_date = datetime.date.today()
+    else:
+        end_date = datetime.datetime.strptime(str(end_date), '%Y-%m-%d').date()
+
+    if interval == 'daily':
+        next_business_date = next_business_day(start_date)
+    elif interval == 'weekly':
+        next_business_date = next_week_business_day(start_date)
+
+    print("##### Generating Report for Interval :" + interval)
+    while next_business_date <= datetime.date.today() and next_business_date <= end_date:
+
+        print("##### START DATE : " + str(start_date) + " , ## END DATE : " + str(next_business_date))
+
+        ## Potential trend change indicators
+        process_signals(start_date, end_date=next_business_date, interval=interval, method='stoch.slow', buy_sell='buy')
+        process_signals(start_date, end_date=next_business_date, interval=interval, method='stoch.slow', buy_sell='sell')
+        process_signals(start_date, end_date=next_business_date, interval=interval, method='rsi', buy_sell='buy')
+        # process_signals(start_date, end_date=next_business_date, interval=interval, method='rsi', buy_sell='sell')
+
+        ## Strong trend indicators
+        process_signals(start_date, end_date=next_business_date, interval=interval, method='ema.8.12', buy_sell='buy')
+        process_signals(start_date, end_date=next_business_date, interval=interval, method='ema.8.12', buy_sell='sell')
+        process_signals(start_date, end_date=next_business_date, interval=interval, method='ema.21', buy_sell='buy')
+        process_signals(start_date, end_date=next_business_date, interval=interval, method='ema.21', buy_sell='sell')
+
+        ## Special Indicators
+        # process_signals(start_date, end_date=next_business_date, interval=interval, method='amit.special', buy_sell='buy')
+        # process_signals(start_date, end_date=next_business_date, interval=interval, method='amit.special', buy_sell='sell')
+
+        start_date = next_business_date
+        if interval == 'daily':
+            next_business_date = next_business_day(start_date)
+        elif interval == 'weekly':
+            next_business_date = next_week_business_day(start_date)
+
+
 def process_price_volume_data_for(ticker, api_key, interval, date):
 
     if interval == 'daily':
