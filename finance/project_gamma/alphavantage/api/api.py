@@ -2,6 +2,11 @@ import requests
 import datetime
 from finance.project_gamma.alphavantage.dao.dao import insert_daily_price_volume, update_daily_price_volume, update_daily_technicals_stochs, update_daily_technicals_ema, update_daily_technicals_rsi, get_status
 from finance.project_gamma.alphavantage.util.util import is_valid_date
+import time
+from finance.project_gamma.alphavantage.util.util import last_business_day, previous_business_day, next_business_day, \
+    next_week_business_day, friday_before_previous_friday, previous_friday
+from finance.project_gamma.alphavantage.dao.dao import update_status, get_tickers
+from finance.project_gamma.alphavantage.dao.data_analytics_dao import process_signals
 
 
 def process_data_for(ticker, api_key, interval, date):
@@ -10,28 +15,28 @@ def process_data_for(ticker, api_key, interval, date):
 
     ## Pricing Data
     if interval == 'daily' or interval == 'weekly':
-        process_price_volume_data_for(ticker, api_key=API_KEY, interval=interval, date=date)
+        process_price_volume_data_for(ticker, api_key, interval=interval, date=date)
     elif interval == '60min':
-        process_intraday_price_volume_data_for(ticker, api_key=API_KEY, interval=interval, date=date)
+        process_intraday_price_volume_data_for(ticker, api_key, interval=interval, date=date)
 
     ## Stochastic Daya
-    process_stochastic_data_for(ticker, api_key=API_KEY, interval=interval, date=date)
+    process_stochastic_data_for(ticker, api_key, interval=interval, date=date)
 
     ## EMA-8 Data
-    process_ema8_data_for(ticker, api_key=API_KEY, interval=interval, date=date)
+    process_ema8_data_for(ticker, api_key, interval=interval, date=date)
 
     ## EMA-12 Data
-    process_ema12_data_for(ticker, api_key=API_KEY, interval=interval, date=date)
+    process_ema12_data_for(ticker, api_key, interval=interval, date=date)
 
     print(str(datetime.datetime.now()) + ' : . . . sleeping')
     time.sleep(20)
 
     ## EMA-21 Data
-    process_ema21_data_for(ticker, api_key=API_KEY, interval=interval, date=date)
+    process_ema21_data_for(ticker, api_key, interval=interval, date=date)
 
     ## RSI Data
-    process_rsi_data_for(ticker, api_key=API_KEY, interval=interval, date=date)
-    ###### process_ema200_data_for(ticker, api_key=API_KEY, interval=interval, date=date)
+    process_rsi_data_for(ticker, api_key, interval=interval, date=date)
+    ###### process_ema200_data_for(ticker, api_key, interval=interval, date=date)
 
     ###### Update DB Status
     # insert_status(ticker, interval=interval, date=datetime.datetime.now().strftime("%Y-%m-%d"))
