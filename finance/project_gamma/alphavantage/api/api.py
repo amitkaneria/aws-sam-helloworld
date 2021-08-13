@@ -1,8 +1,8 @@
 import requests
 import datetime
+import time
 from finance.project_gamma.alphavantage.dao.dao import insert_daily_price_volume, update_daily_price_volume, update_daily_technicals_stochs, update_daily_technicals_ema, update_daily_technicals_rsi, get_status
 from finance.project_gamma.alphavantage.util.util import is_valid_date
-import time
 from finance.project_gamma.alphavantage.util.util import last_business_day, previous_business_day, next_business_day, \
     next_week_business_day, friday_before_previous_friday, previous_friday
 from finance.project_gamma.alphavantage.dao.dao import update_status, get_tickers
@@ -15,27 +15,55 @@ def process_data_for(ticker, api_key, interval, date):
 
     ## Pricing Data
     if interval == 'daily' or interval == 'weekly':
-        process_price_volume_data_for(ticker, api_key, interval=interval, date=date)
+        try:
+            process_price_volume_data_for(ticker, api_key, interval=interval, date=date)
+        except ConnectionError:
+            time.sleep(60)
+            process_price_volume_data_for(ticker, api_key, interval=interval, date=date)
     elif interval == '60min':
-        process_intraday_price_volume_data_for(ticker, api_key, interval=interval, date=date)
+        try:
+            process_intraday_price_volume_data_for(ticker, api_key, interval=interval, date=date)
+        except ConnectionError:
+            time.sleep(60)
+            process_intraday_price_volume_data_for(ticker, api_key, interval=interval, date=date)
 
     ## Stochastic Daya
-    process_stochastic_data_for(ticker, api_key, interval=interval, date=date)
+    try:
+        process_stochastic_data_for(ticker, api_key, interval=interval, date=date)
+    except ConnectionError:
+        time.sleep(60)
+        process_stochastic_data_for(ticker, api_key, interval=interval, date=date)
 
     ## EMA-8 Data
-    process_ema8_data_for(ticker, api_key, interval=interval, date=date)
+    try:
+        process_ema8_data_for(ticker, api_key, interval=interval, date=date)
+    except ConnectionError:
+        time.sleep(60)
+        process_ema8_data_for(ticker, api_key, interval=interval, date=date)
 
     ## EMA-12 Data
-    process_ema12_data_for(ticker, api_key, interval=interval, date=date)
+    try:
+        process_ema12_data_for(ticker, api_key, interval=interval, date=date)
+    except ConnectionError:
+        time.sleep(60)
+        process_ema12_data_for(ticker, api_key, interval=interval, date=date)
 
     print(str(datetime.datetime.now()) + ' : . . . sleeping')
     time.sleep(20)
 
     ## EMA-21 Data
-    process_ema21_data_for(ticker, api_key, interval=interval, date=date)
+    try:
+        process_ema21_data_for(ticker, api_key, interval=interval, date=date)
+    except ConnectionError:
+        time.sleep(60)
+        process_ema21_data_for(ticker, api_key, interval=interval, date=date)
 
     ## RSI Data
-    process_rsi_data_for(ticker, api_key, interval=interval, date=date)
+    try:
+        process_rsi_data_for(ticker, api_key, interval=interval, date=date)
+    except ConnectionError:
+        time.sleep(60)
+        process_rsi_data_for(ticker, api_key, interval=interval, date=date)
     ###### process_ema200_data_for(ticker, api_key, interval=interval, date=date)
 
     ###### Update DB Status
@@ -92,7 +120,12 @@ def process_price_volume_data_for(ticker, api_key, interval, date):
 
     url = 'https://www.alphavantage.co/query?function={0}&symbol={1}&outputsize=full&apikey={2}'.format(interval_enum, ticker, api_key)
 
-    r = requests.get(url)
+    try:
+        r = requests.get(url)
+    except ConnectionError:
+        time.sleep(60)
+        r = requests.get(url)
+
     response_data = r.json()
     if interval == 'daily':
         data = response_data['Time Series (Daily)']
@@ -135,7 +168,12 @@ def process_intraday_price_volume_data_for(ticker, api_key, interval, date):
     if interval == '60min':
         url = 'https://www.alphavantage.co/query?function={0}&symbol={1}&interval={2}&apikey={3}'.format(interval_enum, ticker, time_period, api_key)
 
-    r = requests.get(url)
+    try:
+        r = requests.get(url)
+    except ConnectionError:
+        time.sleep(60)
+        r = requests.get(url)
+
     response_data = r.json()
     if interval == '60min':
         data = response_data['Time Series (60min)']
@@ -178,7 +216,12 @@ def update_price_volume_data_for(ticker, api_key, interval, date):
 
     url = 'https://www.alphavantage.co/query?function={0}&symbol={1}&outputsize=full&apikey={2}'.format(interval_enum, ticker, api_key)
 
-    r = requests.get(url)
+    try:
+        r = requests.get(url)
+    except ConnectionError:
+        time.sleep(60)
+        r = requests.get(url)
+
     response_data = r.json()
     data = response_data['Time Series (Daily)']
 
@@ -215,7 +258,12 @@ def process_stochastic_data_for(ticker, api_key, interval, date=None):
 
     url = 'https://www.alphavantage.co/query?function=STOCH&symbol={0}&interval={1}&apikey={2}'.format(ticker, interval, api_key)
 
-    r = requests.get(url)
+    try:
+        r = requests.get(url)
+    except ConnectionError:
+        time.sleep(60)
+        r = requests.get(url)
+
     response_data = r.json()
     data = response_data['Technical Analysis: STOCH']
 
@@ -252,7 +300,12 @@ def process_rsi_data_for(ticker, api_key, interval, date=None):
 
     url = 'https://www.alphavantage.co/query?function=RSI&symbol={0}&interval={1}&time_period=14&series_type=open&apikey={2}'.format(ticker, interval, api_key)
 
-    r = requests.get(url)
+    try:
+        r = requests.get(url)
+    except ConnectionError:
+        time.sleep(60)
+        r = requests.get(url)
+
     response_data = r.json()
     data = response_data['Technical Analysis: RSI']
 
@@ -288,7 +341,12 @@ def process_ema_data_for(ticker, api_key, ema_period, interval, date=None):
 
     url = 'https://www.alphavantage.co/query?function=EMA&symbol={0}&interval={1}&time_period={2}&series_type=open&apikey={3}'.format(ticker, interval, ema_period, api_key)
 
-    r = requests.get(url)
+    try:
+        r = requests.get(url)
+    except ConnectionError:
+        time.sleep(60)
+        r = requests.get(url)
+
     response_data = r.json()
     data = response_data['Technical Analysis: EMA']
 
