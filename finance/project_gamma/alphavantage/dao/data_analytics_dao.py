@@ -184,7 +184,7 @@ def process_signals(start_date, end_date, method, buy_sell, interval='daily'):
         # connect to the PostgreSQL database
         conn = psycopg2.connect(
             # **params
-            database="Gamma", user='postgres', password='admin', host='127.0.0.1', port= '5432'
+            database="Gamma", user='postgres', password='IFSTdNN6XB9MLt2vFyXI', host='wallstdata.ctgi8zbyshxe.us-east-1.rds.amazonaws.com', port= '5432'
         )
         # create a new cursor
         cur = conn.cursor()

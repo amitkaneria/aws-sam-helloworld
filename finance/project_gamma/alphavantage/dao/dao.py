@@ -5,13 +5,13 @@ from finance.project_gamma.alphavantage.util.util import last_business_day, prev
 def insert_daily_price_volume(ticker, date, interval, open, high, low, close, volume):
 
     if interval == 'daily':
-        sql = """INSERT INTO \"Daily_Data\"(open, high, low, close, volume, ticker, date)
+        sql = """INSERT INTO gamma.daily_data(open, high, low, close, volume, ticker, date)
                  VALUES(%s, %s, %s, %s, %s, %s, %s) ;"""
     elif interval == 'weekly':
-        sql = """INSERT INTO \"Weekly_Data\"(open, high, low, close, volume, ticker, date)
+        sql = """INSERT INTO gamma.weekly_data(open, high, low, close, volume, ticker, date)
                  VALUES(%s, %s, %s, %s, %s, %s, %s) ;"""
     elif interval == '60min':
-        sql = """INSERT INTO \"Hourly_Data\"(open, high, low, close, volume, ticker, datetime)
+        sql = """INSERT INTO gamma.hourly_data(open, high, low, close, volume, ticker, datetime)
                  VALUES(%s, %s, %s, %s, %s, %s, %s) ;"""
 
     conn = None
@@ -21,7 +21,7 @@ def insert_daily_price_volume(ticker, date, interval, open, high, low, close, vo
         # connect to the PostgreSQL database
         conn = psycopg2.connect(
             # **params
-            database="Gamma", user='postgres', password='admin', host='127.0.0.1', port= '5432'
+            database="Gamma", user='postgres', password='IFSTdNN6XB9MLt2vFyXI', host='wallstdata.ctgi8zbyshxe.us-east-1.rds.amazonaws.com', port= '5432'
         )
         # create a new cursor
         cur = conn.cursor()
@@ -42,10 +42,10 @@ def update_daily_price_volume(ticker, date, interval, open, high, low, close, vo
 
 
     if interval == 'daily':
-        sql = """UPDATE \"Daily_Data\" SET open=%s, high=%s, low=%s, close=%s, volume=%s
+        sql = """UPDATE gamma.daily_data SET open=%s, high=%s, low=%s, close=%s, volume=%s
                   WHERE ticker=%s and date=%s ;"""
     elif interval == 'weekly':
-        sql = """UPDATE \"Weekly_Data\" SET open=%s, high=%s, low=%s, close=%s, volume=%s
+        sql = """UPDATE gamma.weekly_data SET open=%s, high=%s, low=%s, close=%s, volume=%s
                   WHERE ticker=%s and date=%s ;"""
 
     conn = None
@@ -55,7 +55,7 @@ def update_daily_price_volume(ticker, date, interval, open, high, low, close, vo
         # connect to the PostgreSQL database
         conn = psycopg2.connect(
             # **params
-            database="Gamma", user='postgres', password='admin', host='127.0.0.1', port= '5432'
+            database="Gamma", user='postgres', password='IFSTdNN6XB9MLt2vFyXI', host='wallstdata.ctgi8zbyshxe.us-east-1.rds.amazonaws.com', port= '5432'
         )
         # create a new cursor
         cur = conn.cursor()
@@ -74,10 +74,10 @@ def update_daily_price_volume(ticker, date, interval, open, high, low, close, vo
 def insert_daily_technicals_stochs(ticker, date, interval, stochs_slowk, stochs_slowd, stochs_delta):
 
     if interval == 'daily':
-        sql = """INSERT INTO \"Daily_Data\"(ticker, date, stochs_slowk, stochs_slowd, stochs_delta)
+        sql = """INSERT INTO gamma.daily_data (ticker, date, stochs_slowk, stochs_slowd, stochs_delta)
                  VALUES(%s, %s, %s, %s, %s) ;"""
     elif interval == 'weekly':
-        sql = """INSERT INTO \"Weekly_Data\"(ticker, date, stochs_slowk, stochs_slowd, stochs_delta)
+        sql = """INSERT INTO gamma.weekly_data (ticker, date, stochs_slowk, stochs_slowd, stochs_delta)
                  VALUES(%s, %s, %s, %s, %s) ;"""
 
 
@@ -88,7 +88,7 @@ def insert_daily_technicals_stochs(ticker, date, interval, stochs_slowk, stochs_
         # connect to the PostgreSQL database
         conn = psycopg2.connect(
             # **params
-            database="Gamma", user='postgres', password='admin', host='127.0.0.1', port= '5432'
+            database="Gamma", user='postgres', password='IFSTdNN6XB9MLt2vFyXI', host='wallstdata.ctgi8zbyshxe.us-east-1.rds.amazonaws.com', port= '5432'
         )
         # create a new cursor
         cur = conn.cursor()
@@ -108,10 +108,10 @@ def insert_daily_technicals_stochs(ticker, date, interval, stochs_slowk, stochs_
 def update_daily_technicals_stochs(ticker, date, interval, stochs_slowk, stochs_slowd, stochs_delta):
 
     if interval == 'daily':
-        sql = """UPDATE \"Daily_Data\" SET stochs_slowk=%s, stochs_slowd=%s, stochs_delta=%s
+        sql = """UPDATE gamma.daily_data SET stochs_slowk=%s, stochs_slowd=%s, stochs_delta=%s
                  WHERE ticker=%s AND date=%s ;"""
     elif interval == 'weekly':
-        sql = """UPDATE \"Weekly_Data\" SET stochs_slowk=%s, stochs_slowd=%s, stochs_delta=%s
+        sql = """UPDATE gamma.weekly_data SET stochs_slowk=%s, stochs_slowd=%s, stochs_delta=%s
                  WHERE ticker=%s AND date=%s ;"""
 
     conn = None
@@ -121,7 +121,7 @@ def update_daily_technicals_stochs(ticker, date, interval, stochs_slowk, stochs_
         # connect to the PostgreSQL database
         conn = psycopg2.connect(
             # **params
-            database="Gamma", user='postgres', password='admin', host='127.0.0.1', port= '5432'
+            database="Gamma", user='postgres', password='IFSTdNN6XB9MLt2vFyXI', host='wallstdata.ctgi8zbyshxe.us-east-1.rds.amazonaws.com', port= '5432'
         )
         # create a new cursor
         cur = conn.cursor()
@@ -140,10 +140,10 @@ def update_daily_technicals_stochs(ticker, date, interval, stochs_slowk, stochs_
 def update_daily_technicals_rsi(ticker, date, interval, rsi_value):
 
     if interval == 'daily':
-        sql = """UPDATE \"Daily_Data\" SET rsi=%s
+        sql = """UPDATE gamma.daily_data SET rsi=%s
                  WHERE ticker=%s AND date=%s ;"""
     elif interval == 'weekly':
-        sql = """UPDATE \"Weekly_Data\" SET rsi=%s
+        sql = """UPDATE gamma.weekly_data SET rsi=%s
                  WHERE ticker=%s AND date=%s ;"""
 
     conn = None
@@ -153,7 +153,7 @@ def update_daily_technicals_rsi(ticker, date, interval, rsi_value):
         # connect to the PostgreSQL database
         conn = psycopg2.connect(
             # **params
-            database="Gamma", user='postgres', password='admin', host='127.0.0.1', port= '5432'
+            database="Gamma", user='postgres', password='IFSTdNN6XB9MLt2vFyXI', host='wallstdata.ctgi8zbyshxe.us-east-1.rds.amazonaws.com', port= '5432'
         )
         # create a new cursor
         cur = conn.cursor()
@@ -174,35 +174,35 @@ def update_daily_technicals_ema(ticker, date, interval, ema_key, ema_value):
 
     if interval == 'daily':
         if ema_key == 'ema8':
-            sql = """UPDATE \"Daily_Data\" SET ema8=%s
+            sql = """UPDATE gamma.daily_data SET ema8=%s
                      WHERE ticker=%s AND date=%s ;"""
         elif ema_key == 'ema9':
-            sql = """UPDATE \"Daily_Data\" SET ema9=%s
+            sql = """UPDATE gamma.daily_data SET ema9=%s
                      WHERE ticker=%s AND date=%s ;"""
         elif ema_key == 'ema12':
-            sql = """UPDATE \"Daily_Data\" SET ema12=%s
+            sql = """UPDATE gamma.daily_data SET ema12=%s
                      WHERE ticker=%s AND date=%s ;"""
         elif ema_key == 'ema21':
-            sql = """UPDATE \"Daily_Data\" SET ema21=%s
+            sql = """UPDATE gamma.daily_data SET ema21=%s
                      WHERE ticker=%s AND date=%s ;"""
         elif ema_key == 'ema200':
-            sql = """UPDATE \"Daily_Data\" SET ema200=%s
+            sql = """UPDATE gamma.daily_data SET ema200=%s
                      WHERE ticker=%s AND date=%s ;"""
     elif interval == 'weekly':
         if ema_key == 'ema8':
-            sql = """UPDATE \"Weekly_Data\" SET ema8=%s
+            sql = """UPDATE gamma.weekly_data SET ema8=%s
                      WHERE ticker=%s AND date=%s ;"""
         elif ema_key == 'ema9':
-            sql = """UPDATE \"Weekly_Data\" SET ema9=%s
+            sql = """UPDATE gamma.weekly_data SET ema9=%s
                      WHERE ticker=%s AND date=%s ;"""
         elif ema_key == 'ema12':
-            sql = """UPDATE \"Weekly_Data\" SET ema12=%s
+            sql = """UPDATE gamma.weekly_data SET ema12=%s
                      WHERE ticker=%s AND date=%s ;"""
         elif ema_key == 'ema21':
-            sql = """UPDATE \"Weekly_Data\" SET ema21=%s
+            sql = """UPDATE gamma.weekly_data SET ema21=%s
                      WHERE ticker=%s AND date=%s ;"""
         elif ema_key == 'ema200':
-            sql = """UPDATE \"Weekly_Data\" SET ema200=%s
+            sql = """UPDATE gamma.weekly_data SET ema200=%s
                      WHERE ticker=%s AND date=%s ;"""
 
     conn = None
@@ -212,7 +212,7 @@ def update_daily_technicals_ema(ticker, date, interval, ema_key, ema_value):
         # connect to the PostgreSQL database
         conn = psycopg2.connect(
             # **params
-            database="Gamma", user='postgres', password='admin', host='127.0.0.1', port= '5432'
+            database="Gamma", user='postgres', password='IFSTdNN6XB9MLt2vFyXI', host='wallstdata.ctgi8zbyshxe.us-east-1.rds.amazonaws.com', port= '5432'
         )
         # create a new cursor
         cur = conn.cursor()
@@ -243,18 +243,18 @@ def get_tickers(interval, last_run_date, priority=None):
 
     if priority == None:
         if interval == 'daily':
-            sql = """select ticker from public."WatchList" where daily_last_run_date < %s order by priority ;"""
+            sql = """select ticker from gamma.watchlist where daily_last_run_date < %s order by priority ;"""
         elif interval == 'weekly':
-            sql = """select ticker from public."WatchList" where weekly_last_run_date < %s order by priority ;"""
+            sql = """select ticker from gamma.watchlist where weekly_last_run_date < %s order by priority ;"""
         elif interval == '60min':
-            sql = """select ticker from public."WatchList" where hourly_last_run_date < %s order by priority ;"""
+            sql = """select ticker from gamma.watchlist where hourly_last_run_date < %s order by priority ;"""
     else:
         if interval == 'daily':
-            sql = """select ticker from public."WatchList" where daily_last_run_date < %s AND priority = %s order by priority ;"""
+            sql = """select ticker from gamma.watchlist where daily_last_run_date < %s AND priority = %s order by priority ;"""
         elif interval == 'weekly':
-            sql = """select ticker from public."WatchList" where weekly_last_run_date < %s AND priority = %s order by priority ;"""
+            sql = """select ticker from gamma.watchlist where weekly_last_run_date < %s AND priority = %s order by priority ;"""
         elif interval == '60min':
-            sql = """select ticker from public."WatchList" where hourly_last_run_date < %s AND priority = %s order by priority ;"""
+            sql = """select ticker from gamma.watchlist where hourly_last_run_date < %s AND priority = %s order by priority ;"""
 
     conn = None
     try:
@@ -263,7 +263,7 @@ def get_tickers(interval, last_run_date, priority=None):
         # connect to the PostgreSQL database
         conn = psycopg2.connect(
             # **params
-            database="Gamma", user='postgres', password='admin', host='127.0.0.1', port= '5432'
+            database="Gamma", user='postgres', password='IFSTdNN6XB9MLt2vFyXI', host='wallstdata.ctgi8zbyshxe.us-east-1.rds.amazonaws.com', port= '5432'
         )
         cur = conn.cursor()
         if priority == None:
@@ -290,10 +290,10 @@ def get_tickers(interval, last_run_date, priority=None):
 def get_status(ticker, interval):
 
     if interval == 'daily':
-        sql = """SELECT daily_last_run_date FROM \"WatchList\"
+        sql = """SELECT daily_last_run_date FROM gamma.watchlist
                      WHERE ticker=%s ;"""
     elif interval == 'weekly':
-        sql = """SELECT weekly_last_run_date FROM \"WatchList\"
+        sql = """SELECT weekly_last_run_date FROM gamma.watchlist
                      WHERE ticker=%s ;"""
 
     conn = None
@@ -303,7 +303,7 @@ def get_status(ticker, interval):
         # connect to the PostgreSQL database
         conn = psycopg2.connect(
             # **params
-            database="Gamma", user='postgres', password='admin', host='127.0.0.1', port= '5432'
+            database="Gamma", user='postgres', password='IFSTdNN6XB9MLt2vFyXI', host='wallstdata.ctgi8zbyshxe.us-east-1.rds.amazonaws.com', port= '5432'
         )
         # create a new cursor
         cur = conn.cursor()
@@ -330,10 +330,10 @@ def get_status(ticker, interval):
 def insert_status(ticker, date, interval):
 
     if interval == 'daily':
-        sql = """INSERT INTO \"WatchList\"(ticker, daily_last_run_date)
+        sql = """INSERT INTO gamma.watchlist(ticker, daily_last_run_date)
                  VALUES(%s, %s) ;"""
     elif interval == 'weekly':
-        sql = """INSERT INTO \"WatchList\"(ticker, weekly_last_run_date)
+        sql = """INSERT INTO gamma.watchlist(ticker, weekly_last_run_date)
                  VALUES(%s, %s) ;"""
 
     conn = None
@@ -343,7 +343,7 @@ def insert_status(ticker, date, interval):
         # connect to the PostgreSQL database
         conn = psycopg2.connect(
             # **params
-            database="Gamma", user='postgres', password='admin', host='127.0.0.1', port= '5432'
+            database="Gamma", user='postgres', password='IFSTdNN6XB9MLt2vFyXI', host='wallstdata.ctgi8zbyshxe.us-east-1.rds.amazonaws.com', port= '5432'
         )
         # create a new cursor
         cur = conn.cursor()
@@ -364,13 +364,13 @@ def insert_status(ticker, date, interval):
 def update_status(ticker, date, interval):
 
     if interval == 'daily':
-        sql = """UPDATE \"WatchList\" SET daily_last_run_date=%s
+        sql = """UPDATE gamma.watchlist SET daily_last_run_date=%s
                      WHERE ticker=%s;"""
     elif interval == 'weekly':
-        sql = """UPDATE \"WatchList\" SET weekly_last_run_date=%s
+        sql = """UPDATE gamma.watchlist SET weekly_last_run_date=%s
                      WHERE ticker=%s;"""
     elif interval == 'hourly':
-        sql = """UPDATE \"WatchList\" SET hourly_last_run_date=%s
+        sql = """UPDATE gamma.watchlist SET hourly_last_run_date=%s
                      WHERE ticker=%s;"""
 
     conn = None
@@ -380,7 +380,7 @@ def update_status(ticker, date, interval):
         # connect to the PostgreSQL database
         conn = psycopg2.connect(
             # **params
-            database="Gamma", user='postgres', password='admin', host='127.0.0.1', port= '5432'
+            database="Gamma", user='postgres', password='IFSTdNN6XB9MLt2vFyXI', host='wallstdata.ctgi8zbyshxe.us-east-1.rds.amazonaws.com', port= '5432'
         )
         # create a new cursor
         cur = conn.cursor()

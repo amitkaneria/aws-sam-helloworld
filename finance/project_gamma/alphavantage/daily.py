@@ -127,8 +127,8 @@ elif option == 3:
 
     # process_data_for("UPST", api_key=API_KEY, interval='weekly', date=None)
     # process_data_for("BNTX", api_key=API_KEY, interval='daily', date='2021-07-22')
-    process_data_for(ticker='SI', api_key=API_KEY, interval='daily', date=None)
-    process_data_for(ticker='MSTR', api_key=API_KEY, interval='daily', date=None)
+    # process_data_for(ticker='SI', api_key=API_KEY, interval='daily', date=None)
+    process_data_for(ticker='IRBT', api_key=API_KEY, interval='daily', date=None)
 
 elif option == 4:
     # generate_signal(interval='weekly', start_date='2020-01-03', end_date='2020-12-25')

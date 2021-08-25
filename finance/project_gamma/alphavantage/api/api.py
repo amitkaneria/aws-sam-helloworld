@@ -17,34 +17,34 @@ def process_data_for(ticker, api_key, interval, date):
     if interval == 'daily' or interval == 'weekly':
         try:
             process_price_volume_data_for(ticker, api_key, interval=interval, date=date)
-        except ConnectionError:
+        except requests.exceptions.ConnectionError:
             time.sleep(60)
             process_price_volume_data_for(ticker, api_key, interval=interval, date=date)
     elif interval == '60min':
         try:
             process_intraday_price_volume_data_for(ticker, api_key, interval=interval, date=date)
-        except ConnectionError:
+        except requests.exceptions.ConnectionError:
             time.sleep(60)
             process_intraday_price_volume_data_for(ticker, api_key, interval=interval, date=date)
 
     ## Stochastic Daya
     try:
         process_stochastic_data_for(ticker, api_key, interval=interval, date=date)
-    except ConnectionError:
+    except requests.exceptions.ConnectionError:
         time.sleep(60)
         process_stochastic_data_for(ticker, api_key, interval=interval, date=date)
 
     ## EMA-8 Data
     try:
         process_ema8_data_for(ticker, api_key, interval=interval, date=date)
-    except ConnectionError:
+    except requests.exceptions.ConnectionError:
         time.sleep(60)
         process_ema8_data_for(ticker, api_key, interval=interval, date=date)
 
     ## EMA-12 Data
     try:
         process_ema12_data_for(ticker, api_key, interval=interval, date=date)
-    except ConnectionError:
+    except requests.exceptions.ConnectionError:
         time.sleep(60)
         process_ema12_data_for(ticker, api_key, interval=interval, date=date)
 
@@ -54,14 +54,14 @@ def process_data_for(ticker, api_key, interval, date):
     ## EMA-21 Data
     try:
         process_ema21_data_for(ticker, api_key, interval=interval, date=date)
-    except ConnectionError:
+    except requests.exceptions.ConnectionError:
         time.sleep(60)
         process_ema21_data_for(ticker, api_key, interval=interval, date=date)
 
     ## RSI Data
     try:
         process_rsi_data_for(ticker, api_key, interval=interval, date=date)
-    except ConnectionError:
+    except requests.exceptions.ConnectionError:
         time.sleep(60)
         process_rsi_data_for(ticker, api_key, interval=interval, date=date)
     ###### process_ema200_data_for(ticker, api_key, interval=interval, date=date)
@@ -122,7 +122,7 @@ def process_price_volume_data_for(ticker, api_key, interval, date):
 
     try:
         r = requests.get(url)
-    except ConnectionError:
+    except requests.exceptions.ConnectionError:
         time.sleep(60)
         r = requests.get(url)
 
@@ -170,7 +170,7 @@ def process_intraday_price_volume_data_for(ticker, api_key, interval, date):
 
     try:
         r = requests.get(url)
-    except ConnectionError:
+    except requests.exceptions.ConnectionError:
         time.sleep(60)
         r = requests.get(url)
 
@@ -218,7 +218,7 @@ def update_price_volume_data_for(ticker, api_key, interval, date):
 
     try:
         r = requests.get(url)
-    except ConnectionError:
+    except requests.exceptions.ConnectionError:
         time.sleep(60)
         r = requests.get(url)
 
@@ -260,7 +260,10 @@ def process_stochastic_data_for(ticker, api_key, interval, date=None):
 
     try:
         r = requests.get(url)
-    except ConnectionError:
+    except requests.exceptions.ConnectionError:
+        time.sleep(60)
+        r = requests.get(url)
+    except requests.exceptions.ChunkedEncodingError:
         time.sleep(60)
         r = requests.get(url)
 
@@ -302,7 +305,7 @@ def process_rsi_data_for(ticker, api_key, interval, date=None):
 
     try:
         r = requests.get(url)
-    except ConnectionError:
+    except requests.exceptions.ConnectionError:
         time.sleep(60)
         r = requests.get(url)
 
@@ -343,7 +346,7 @@ def process_ema_data_for(ticker, api_key, ema_period, interval, date=None):
 
     try:
         r = requests.get(url)
-    except ConnectionError:
+    except requests.exceptions.ConnectionError:
         time.sleep(60)
         r = requests.get(url)
 
