@@ -1,2 +1,4 @@
 workalendar
 business-python
+python-decouple
+python-dotenv

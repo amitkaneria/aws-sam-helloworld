@@ -1,5 +1,10 @@
 import datetime
 import psycopg2
+from dotenv import load_dotenv
+import os
+load_dotenv()
+
+db_pwd = os.environ.get('db_pwd')
 
 
 def process_signals(start_date, end_date, method, buy_sell, interval='daily'):
@@ -114,7 +119,7 @@ def process_signals(start_date, end_date, method, buy_sell, interval='daily'):
                     ;"""
 
     elif option == 'weekly_sell_ema.8.12':
-        sql = """INSERT INTO public."Weekly_Signals"(ticker, date, buy_sell, method, note, reco_price)
+        sql = """INSERT INTO gamma.weekly_signals (ticker, date, buy_sell, method, note, reco_price)
                     SELECT A.ticker, B.date, 'sell', 'EMA_8_12', 'EMA 8 crossing EMA upside indicates buy signal, please verify with other technicals and material news, ratings changes', B.close
                     FROM gamma.weekly_data A, gamma.weekly_data B
                     WHERE A.ticker = B.ticker AND A.date = %s AND B.date = %s
@@ -124,7 +129,7 @@ def process_signals(start_date, end_date, method, buy_sell, interval='daily'):
                     ;"""
 
     elif option == 'weekly_buy_ema.21':
-        sql = """INSERT INTO public."Weekly_Signals"(ticker, date, buy_sell, method, note, reco_price)
+        sql = """INSERT INTO gamma.weekly_signals (ticker, date, buy_sell, method, note, reco_price)
                     SELECT A.ticker, B.date, 'buy', 'EMA_21', 'EMA 21 crossing this week price for potential buy signal, please verify with other technicals and material news, ratings changes', B.close
                     FROM gamma.weekly_data A, gamma.weekly_data B
                     WHERE A.ticker = B.ticker AND A.date = %s AND B.date = %s
@@ -134,7 +139,7 @@ def process_signals(start_date, end_date, method, buy_sell, interval='daily'):
                     ;"""
 
     elif option == 'weekly_sell_ema.21':
-        sql = """INSERT INTO public."Weekly_Signals"(ticker, date, buy_sell, method, note, reco_price)
+        sql = """INSERT INTO gamma.weekly_signals (ticker, date, buy_sell, method, note, reco_price)
                     SELECT A.ticker, B.date, 'sell', 'EMA_21', 'EMA 21 crossing this week price for potential sell signal, please verify with other technicals and material news, ratings changes', B.close
                     FROM gamma.weekly_data A, gamma.weekly_data B
                     WHERE A.ticker = B.ticker AND A.date = %s AND B.date = %s
@@ -144,7 +149,7 @@ def process_signals(start_date, end_date, method, buy_sell, interval='daily'):
                     ;"""
 
     elif option == 'weekly_buy_stoch.slow':
-        sql = """INSERT INTO public."Weekly_Signals"(ticker, date, buy_sell, method, note, reco_price)
+        sql = """INSERT INTO gamma.weekly_signals (ticker, date, buy_sell, method, note, reco_price)
                     SELECT A.ticker, B.date, 'buy', 'STOCH_SLOW', 'stoch-slow 5-3-3 indicated signal, Potential trend change. Please verify with other technicals as RSI/ EMA 21/ 8-12 crossover and material news, ratings changes', B.close
                     FROM gamma.weekly_data A, gamma.weekly_data B
                     WHERE A.ticker = B.ticker AND A.date = %s AND B.date = %s
@@ -154,7 +159,7 @@ def process_signals(start_date, end_date, method, buy_sell, interval='daily'):
                     ;"""
 
     elif option == 'weekly_sell_stoch.slow':
-        sql = """INSERT INTO public."Weekly_Signals"(ticker, date, buy_sell, method, note, reco_price)
+        sql = """INSERT INTO gamma.weekly_signals (ticker, date, buy_sell, method, note, reco_price)
                     SELECT A.ticker, B.date, 'sell', 'STOCH_SLOW', 'stoch-slow 5-3-3 indicates signal, Potential trend change. Please verify with other technicals as RSI/ EMA 21/ 8-12 crossover and material news, ratings changes', B.close
                     FROM gamma.weekly_data A, gamma.weekly_data B
                     where A.ticker = B.ticker and A.date = %s and B.date = %s
@@ -164,7 +169,7 @@ def process_signals(start_date, end_date, method, buy_sell, interval='daily'):
                     ;"""
 
     elif option == 'weekly_buy_rsi':
-        sql = """INSERT INTO public."Weekly_Signals"(ticker, date, buy_sell, method, note, reco_price)
+        sql = """INSERT INTO gamma.weekly_signals(ticker, date, buy_sell, method, note, reco_price)
                     SELECT A.ticker, B.date, 'buy', 'RSI', 'RSI Oversold, please verify with other technicals and material news, ratings changes', B.close
                     FROM gamma.weekly_data A, gamma.weekly_data B
                     WHERE A.ticker = B.ticker and A.date = %s and B.date = %s
@@ -184,7 +189,7 @@ def process_signals(start_date, end_date, method, buy_sell, interval='daily'):
         # connect to the PostgreSQL database
         conn = psycopg2.connect(
             # **params
-            database="Gamma", user='postgres', password='IFSTdNN6XB9MLt2vFyXI', host='wallstdata.ctgi8zbyshxe.us-east-1.rds.amazonaws.com', port= '5432'
+            database="Gamma", user='postgres', password=db_pwd, host='wallstdata.ctgi8zbyshxe.us-east-1.rds.amazonaws.com', port= '5432'
         )
         # create a new cursor
         cur = conn.cursor()

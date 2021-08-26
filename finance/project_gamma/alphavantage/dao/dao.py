@@ -1,6 +1,10 @@
 import psycopg2
 from finance.project_gamma.alphavantage.util.util import last_business_day, previous_friday
+from dotenv import load_dotenv
+import os
+load_dotenv()
 
+db_pwd = os.environ.get('db_pwd')
 
 def insert_daily_price_volume(ticker, date, interval, open, high, low, close, volume):
 
@@ -21,7 +25,7 @@ def insert_daily_price_volume(ticker, date, interval, open, high, low, close, vo
         # connect to the PostgreSQL database
         conn = psycopg2.connect(
             # **params
-            database="Gamma", user='postgres', password='IFSTdNN6XB9MLt2vFyXI', host='wallstdata.ctgi8zbyshxe.us-east-1.rds.amazonaws.com', port= '5432'
+            database="Gamma", user='postgres', password=db_pwd, host='wallstdata.ctgi8zbyshxe.us-east-1.rds.amazonaws.com', port= '5432'
         )
         # create a new cursor
         cur = conn.cursor()
@@ -55,7 +59,7 @@ def update_daily_price_volume(ticker, date, interval, open, high, low, close, vo
         # connect to the PostgreSQL database
         conn = psycopg2.connect(
             # **params
-            database="Gamma", user='postgres', password='IFSTdNN6XB9MLt2vFyXI', host='wallstdata.ctgi8zbyshxe.us-east-1.rds.amazonaws.com', port= '5432'
+            database="Gamma", user='postgres', password=db_pwd, host='wallstdata.ctgi8zbyshxe.us-east-1.rds.amazonaws.com', port= '5432'
         )
         # create a new cursor
         cur = conn.cursor()
@@ -88,7 +92,7 @@ def insert_daily_technicals_stochs(ticker, date, interval, stochs_slowk, stochs_
         # connect to the PostgreSQL database
         conn = psycopg2.connect(
             # **params
-            database="Gamma", user='postgres', password='IFSTdNN6XB9MLt2vFyXI', host='wallstdata.ctgi8zbyshxe.us-east-1.rds.amazonaws.com', port= '5432'
+            database="Gamma", user='postgres', password=db_pwd, host='wallstdata.ctgi8zbyshxe.us-east-1.rds.amazonaws.com', port= '5432'
         )
         # create a new cursor
         cur = conn.cursor()
@@ -121,7 +125,7 @@ def update_daily_technicals_stochs(ticker, date, interval, stochs_slowk, stochs_
         # connect to the PostgreSQL database
         conn = psycopg2.connect(
             # **params
-            database="Gamma", user='postgres', password='IFSTdNN6XB9MLt2vFyXI', host='wallstdata.ctgi8zbyshxe.us-east-1.rds.amazonaws.com', port= '5432'
+            database="Gamma", user='postgres', password=db_pwd, host='wallstdata.ctgi8zbyshxe.us-east-1.rds.amazonaws.com', port= '5432'
         )
         # create a new cursor
         cur = conn.cursor()
@@ -153,7 +157,7 @@ def update_daily_technicals_rsi(ticker, date, interval, rsi_value):
         # connect to the PostgreSQL database
         conn = psycopg2.connect(
             # **params
-            database="Gamma", user='postgres', password='IFSTdNN6XB9MLt2vFyXI', host='wallstdata.ctgi8zbyshxe.us-east-1.rds.amazonaws.com', port= '5432'
+            database="Gamma", user='postgres', password=db_pwd, host='wallstdata.ctgi8zbyshxe.us-east-1.rds.amazonaws.com', port= '5432'
         )
         # create a new cursor
         cur = conn.cursor()
@@ -212,7 +216,7 @@ def update_daily_technicals_ema(ticker, date, interval, ema_key, ema_value):
         # connect to the PostgreSQL database
         conn = psycopg2.connect(
             # **params
-            database="Gamma", user='postgres', password='IFSTdNN6XB9MLt2vFyXI', host='wallstdata.ctgi8zbyshxe.us-east-1.rds.amazonaws.com', port= '5432'
+            database="Gamma", user='postgres', password=db_pwd, host='wallstdata.ctgi8zbyshxe.us-east-1.rds.amazonaws.com', port= '5432'
         )
         # create a new cursor
         cur = conn.cursor()
@@ -263,7 +267,7 @@ def get_tickers(interval, last_run_date, priority=None):
         # connect to the PostgreSQL database
         conn = psycopg2.connect(
             # **params
-            database="Gamma", user='postgres', password='IFSTdNN6XB9MLt2vFyXI', host='wallstdata.ctgi8zbyshxe.us-east-1.rds.amazonaws.com', port= '5432'
+            database="Gamma", user='postgres', password=db_pwd, host='wallstdata.ctgi8zbyshxe.us-east-1.rds.amazonaws.com', port= '5432'
         )
         cur = conn.cursor()
         if priority == None:
@@ -303,7 +307,7 @@ def get_status(ticker, interval):
         # connect to the PostgreSQL database
         conn = psycopg2.connect(
             # **params
-            database="Gamma", user='postgres', password='IFSTdNN6XB9MLt2vFyXI', host='wallstdata.ctgi8zbyshxe.us-east-1.rds.amazonaws.com', port= '5432'
+            database="Gamma", user='postgres', password=db_pwd, host='wallstdata.ctgi8zbyshxe.us-east-1.rds.amazonaws.com', port= '5432'
         )
         # create a new cursor
         cur = conn.cursor()
@@ -343,7 +347,7 @@ def insert_status(ticker, date, interval):
         # connect to the PostgreSQL database
         conn = psycopg2.connect(
             # **params
-            database="Gamma", user='postgres', password='IFSTdNN6XB9MLt2vFyXI', host='wallstdata.ctgi8zbyshxe.us-east-1.rds.amazonaws.com', port= '5432'
+            database="Gamma", user='postgres', password=db_pwd, host='wallstdata.ctgi8zbyshxe.us-east-1.rds.amazonaws.com', port= '5432'
         )
         # create a new cursor
         cur = conn.cursor()
@@ -380,7 +384,7 @@ def update_status(ticker, date, interval):
         # connect to the PostgreSQL database
         conn = psycopg2.connect(
             # **params
-            database="Gamma", user='postgres', password='IFSTdNN6XB9MLt2vFyXI', host='wallstdata.ctgi8zbyshxe.us-east-1.rds.amazonaws.com', port= '5432'
+            database="Gamma", user='postgres', password=db_pwd, host='wallstdata.ctgi8zbyshxe.us-east-1.rds.amazonaws.com', port= '5432'
         )
         # create a new cursor
         cur = conn.cursor()

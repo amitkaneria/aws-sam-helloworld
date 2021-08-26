@@ -1,4 +1,8 @@
 from datetime import date
+from dotenv import load_dotenv
+import os
+load_dotenv()
+print(os.environ.get('db_pwd'))
 
 today = date.today()
 print("Today's date:", today)
