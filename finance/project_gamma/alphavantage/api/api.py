@@ -7,7 +7,12 @@ from finance.project_gamma.alphavantage.util.util import last_business_day, prev
     next_week_business_day, friday_before_previous_friday, previous_friday
 from finance.project_gamma.alphavantage.dao.dao import update_status, get_tickers
 from finance.project_gamma.alphavantage.dao.data_analytics_dao import process_signals
+from dotenv import load_dotenv
+import os
+load_dotenv()
 
+DAILY_DATA_COLLECTION_START_DATE = os.environ.get('WEEKLY_DATA_COLLECTION_START_DATE')
+WEEKLY_DATA_COLLECTION_START_DATE = os.environ.get('WEEKLY_DATA_COLLECTION_START_DATE')
 
 def process_data_for(ticker, api_key, interval, date):
 
@@ -96,15 +101,18 @@ def process_data_for(ticker, api_key, interval, date):
 
 def generate_signal(interval='daily', start_date='2020-12-31', end_date=None):
 
+
     if end_date == None:
         end_date = datetime.date.today()
     else:
         end_date = datetime.datetime.strptime(str(end_date), '%Y-%m-%d').date()
 
+
     if interval == 'daily':
         next_business_date = next_business_day(start_date)
     elif interval == 'weekly':
         next_business_date = next_week_business_day(start_date)
+
 
     print("##### Generating Report for Interval :" + interval)
     while next_business_date <= datetime.date.today() and next_business_date <= end_date:
@@ -135,6 +143,7 @@ def generate_signal(interval='daily', start_date='2020-12-31', end_date=None):
 
 
 def process_price_volume_data_for(ticker, api_key, interval, date):
+
 
     if interval == 'daily':
         interval_enum = 'TIME_SERIES_DAILY'
@@ -174,7 +183,11 @@ def process_price_volume_data_for(ticker, api_key, interval, date):
             except:
                 new_date = datetime.datetime.strptime(date, '%Y-%m-%d %H:%M:%S').date()
 
-            start_date = datetime.datetime.strptime('2019-12-31', '%Y-%m-%d').date()
+            if interval == 'daily':
+                start_date = datetime.datetime.strptime(DAILY_DATA_COLLECTION_START_DATE, '%Y-%m-%d').date()
+            elif interval == 'weekly':
+                start_date = datetime.datetime.strptime(WEEKLY_DATA_COLLECTION_START_DATE, '%Y-%m-%d').date()
+
             if last_run == None:
                 last_run = start_date
 
@@ -220,7 +233,11 @@ def process_intraday_price_volume_data_for(ticker, api_key, interval, date):
             except:
                 new_date = datetime.datetime.strptime(date, '%Y-%m-%d %H:%M:%S').date()
 
-            start_date = datetime.datetime.strptime('2019-12-31', '%Y-%m-%d').date()
+            if interval == 'daily':
+                start_date = datetime.datetime.strptime(DAILY_DATA_COLLECTION_START_DATE, '%Y-%m-%d').date()
+            elif interval == 'weekly':
+                start_date = datetime.datetime.strptime(WEEKLY_DATA_COLLECTION_START_DATE, '%Y-%m-%d').date()
+
             if last_run == None:
                 last_run = start_date
 
@@ -267,7 +284,11 @@ def update_price_volume_data_for(ticker, api_key, interval, date):
             except:
                 new_date = datetime.datetime.strptime(date, '%Y-%m-%d %H:%M:%S').date()
 
-            start_date = datetime.datetime.strptime('2019-12-31', '%Y-%m-%d').date()
+            if interval == 'daily':
+                start_date = datetime.datetime.strptime(DAILY_DATA_COLLECTION_START_DATE, '%Y-%m-%d').date()
+            elif interval == 'weekly':
+                start_date = datetime.datetime.strptime(WEEKLY_DATA_COLLECTION_START_DATE, '%Y-%m-%d').date()
+
             if last_run == None:
                 last_run = start_date
 
@@ -312,7 +333,11 @@ def process_stochastic_data_for(ticker, api_key, interval, date=None):
             except:
                 new_date = datetime.datetime.strptime(date, '%Y-%m-%d %H:%M:%S').date()
 
-            start_date = datetime.datetime.strptime('2015-12-31', '%Y-%m-%d').date()
+            if interval == 'daily':
+                start_date = datetime.datetime.strptime(DAILY_DATA_COLLECTION_START_DATE, '%Y-%m-%d').date()
+            elif interval == 'weekly':
+                start_date = datetime.datetime.strptime(WEEKLY_DATA_COLLECTION_START_DATE, '%Y-%m-%d').date()
+
             if last_run == None:
                 last_run = start_date
 
@@ -354,7 +379,11 @@ def process_rsi_data_for(ticker, api_key, interval, date=None):
             except:
                 new_date = datetime.datetime.strptime(date, '%Y-%m-%d %H:%M:%S').date()
 
-            start_date = datetime.datetime.strptime('2015-12-31', '%Y-%m-%d').date()
+            if interval == 'daily':
+                start_date = datetime.datetime.strptime(DAILY_DATA_COLLECTION_START_DATE, '%Y-%m-%d').date()
+            elif interval == 'weekly':
+                start_date = datetime.datetime.strptime(WEEKLY_DATA_COLLECTION_START_DATE, '%Y-%m-%d').date()
+
             if last_run == None:
                 last_run = start_date
 
@@ -397,7 +426,11 @@ def process_ema_data_for(ticker, api_key, ema_period, interval, date=None):
             except:
                 new_date = datetime.datetime.strptime(date, '%Y-%m-%d %H:%M:%S').date()
 
-            start_date = datetime.datetime.strptime('2019-12-31', '%Y-%m-%d').date()
+            if interval == 'daily':
+                start_date = datetime.datetime.strptime(DAILY_DATA_COLLECTION_START_DATE, '%Y-%m-%d').date()
+            elif interval == 'weekly':
+                start_date = datetime.datetime.strptime(WEEKLY_DATA_COLLECTION_START_DATE, '%Y-%m-%d').date()
+
             if last_run == None:
                 last_run = start_date
 
