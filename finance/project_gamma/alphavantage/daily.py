@@ -1,11 +1,15 @@
 import time
 import datetime
 from finance.project_gamma.alphavantage.api.api import process_price_volume_data_for, process_stochastic_data_for, process_ema8_data_for, \
-    process_ema12_data_for, process_ema21_data_for, process_rsi_data_for, process_intraday_price_volume_data_for, process_data_for, generate_signal
+    process_ema12_data_for, process_ema21_data_for, process_rsi_data_for, process_intraday_price_volume_data_for, process_data_for, generate_signal,\
+    process_ema200_data_for, process_ema50_data_for
 from finance.project_gamma.alphavantage.util.util import last_business_day, previous_business_day, next_business_day, \
     next_week_business_day, friday_before_previous_friday, previous_friday
 from finance.project_gamma.alphavantage.dao.dao import update_status, get_tickers
 from finance.project_gamma.alphavantage.dao.data_analytics_dao import process_signals
+from dotenv import load_dotenv
+import os
+load_dotenv()
 
 # 1	"MAIN"
 # 2	"GROWTH"
@@ -25,7 +29,7 @@ ticker_list_new     = ['SCHW', 'BNTX', 'CMG', 'JNJ', 'EFX', 'NVS', 'TXN', 'WHR']
 ticker_list_delta = ['UPST', 'HGV', 'APHA', 'FVRR', 'ADBE', 'AI']
 
 ################################################################################
-API_KEY='XYF81MAS06D29A24'
+API_KEY = os.environ.get('ALPHAVANTAGE_API_KEY')
 
 option=1
 print('Select Options below:' + str(option))
@@ -41,11 +45,12 @@ if option == 1:
     ticker_list_db = get_tickers(interval='daily', last_run_date=None, priority=0)
     print("Priority: 0, Running Daily for List:" + str(ticker_list_db))
     for ticker in ticker_list_db:
+        print(str(datetime.datetime.now()) + ' : ##### ##### '+ ticker + ' ##### #####')
         # process_data_for(ticker, api_key=API_KEY, interval='daily', date='2021-07-16')
         # process_data_for(ticker, api_key=API_KEY, interval='weekly', date=None)
         process_data_for(ticker, api_key=API_KEY, interval=interval, date=None)
         print(str(datetime.datetime.now()) + ' : . . . sleeping')
-        time.sleep(25)
+        time.sleep(30)
 
     if len(ticker_list_db) > 0:
         # Daily Analytics Run
@@ -57,6 +62,7 @@ if option == 1:
     ticker_list_db = get_tickers(interval='daily', last_run_date=None, priority=1)
     print("Priority: 1, Running Daily for List:" + str(ticker_list_db))
     for ticker in ticker_list_db:
+        print(str(datetime.datetime.now()) + ' : ##### ##### '+ ticker + ' ##### #####')
         # process_data_for(ticker, api_key=API_KEY, interval='daily', date='2021-07-16')
         # process_data_for(ticker, api_key=API_KEY, interval='weekly', date=None)
         process_data_for(ticker, api_key=API_KEY, interval=interval, date=None)
@@ -73,6 +79,7 @@ if option == 1:
     ticker_list_db = get_tickers(interval='daily', last_run_date=None, priority=2)
     print("Priority: 2, Running Daily for List:" + str(ticker_list_db))
     for ticker in ticker_list_db:
+        print(str(datetime.datetime.now()) + ' : ##### ##### '+ ticker + ' ##### #####')
         # process_data_for(ticker, api_key=API_KEY, interval='daily', date='2021-07-16')
         # process_data_for(ticker, api_key=API_KEY, interval='weekly', date=None)
         process_data_for(ticker, api_key=API_KEY, interval=interval, date=None)
@@ -89,6 +96,7 @@ if option == 1:
     ticker_list_db = get_tickers(interval=interval, last_run_date=None, priority=None)
     print("Priority: ALL, Running Daily for List:" + str(ticker_list_db))
     for ticker in ticker_list_db:
+        print(str(datetime.datetime.now()) + ' : ##### ##### '+ ticker + ' ##### #####')
         # process_data_for(ticker, api_key=API_KEY, interval='daily', date='2021-07-16')
         # process_data_for(ticker, api_key=API_KEY, interval='weekly', date=None)
         process_data_for(ticker, api_key=API_KEY, interval=interval, date=None)
@@ -105,6 +113,7 @@ if option == 1:
     ticker_list_db = get_tickers(interval='weekly', last_run_date=None, priority=None)
     print("Running Weekly for List:" + str(ticker_list_db))
     for ticker in ticker_list_db:
+        print(str(datetime.datetime.now()) + ' : ##### ##### '+ ticker + ' ##### #####')
         # process_data_for(ticker, api_key=API_KEY, interval='daily', date='2021-07-16')
         # process_data_for(ticker, api_key=API_KEY, interval='weekly', date=None)
         process_data_for(ticker, api_key=API_KEY, interval='weekly', date=None)
@@ -129,6 +138,7 @@ elif option == 3:
     # process_data_for("BNTX", api_key=API_KEY, interval='daily', date='2021-07-22')
     # process_data_for(ticker='SI', api_key=API_KEY, interval='daily', date=None)
     process_data_for(ticker='IRBT', api_key=API_KEY, interval='daily', date=None)
+    # process_ema50_data_for(ticker='AAPL', api_key=API_KEY, interval='daily', date=None)
 
 elif option == 4:
     # generate_signal(interval='weekly', start_date='2020-01-03', end_date='2020-12-25')
@@ -137,7 +147,7 @@ elif option == 4:
 
 elif option == 5:
     # ticker_list_db = get_tickers(interval='daily', last_run_date='2021-07-21', priority=1)
-    ticker_list_db = get_tickers(interval='daily', last_run_date='2021-08-02', priority=0)
+    ticker_list_db = get_tickers(interval='daily', last_run_date=None, priority=None)
     print("Running for List:" + str(ticker_list_db))
 
 elif option == 6:

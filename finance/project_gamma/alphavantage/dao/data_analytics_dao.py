@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 import os
 load_dotenv()
 
-db_pwd = os.environ.get('db_pwd')
+db_pwd = os.environ.get('DB_PWD')
 
 
 def process_signals(start_date, end_date, method, buy_sell, interval='daily'):

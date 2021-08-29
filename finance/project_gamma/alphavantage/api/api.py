@@ -11,7 +11,6 @@ from finance.project_gamma.alphavantage.dao.data_analytics_dao import process_si
 
 def process_data_for(ticker, api_key, interval, date):
 
-    print(str(datetime.datetime.now()) + ' : ##### ##### '+ ticker + ' ##### #####')
 
     ## Pricing Data
     if interval == 'daily' or interval == 'weekly':
@@ -27,12 +26,14 @@ def process_data_for(ticker, api_key, interval, date):
             time.sleep(60)
             process_intraday_price_volume_data_for(ticker, api_key, interval=interval, date=date)
 
+
     ## Stochastic Daya
     try:
         process_stochastic_data_for(ticker, api_key, interval=interval, date=date)
     except requests.exceptions.ConnectionError:
         time.sleep(60)
         process_stochastic_data_for(ticker, api_key, interval=interval, date=date)
+
 
     ## EMA-8 Data
     try:
@@ -41,6 +42,7 @@ def process_data_for(ticker, api_key, interval, date):
         time.sleep(60)
         process_ema8_data_for(ticker, api_key, interval=interval, date=date)
 
+
     ## EMA-12 Data
     try:
         process_ema12_data_for(ticker, api_key, interval=interval, date=date)
@@ -48,8 +50,10 @@ def process_data_for(ticker, api_key, interval, date):
         time.sleep(60)
         process_ema12_data_for(ticker, api_key, interval=interval, date=date)
 
+
     print(str(datetime.datetime.now()) + ' : . . . sleeping')
-    time.sleep(20)
+    time.sleep(25)
+
 
     ## EMA-21 Data
     try:
@@ -58,13 +62,32 @@ def process_data_for(ticker, api_key, interval, date):
         time.sleep(60)
         process_ema21_data_for(ticker, api_key, interval=interval, date=date)
 
+
+    ## EMA-50 Data
+    if interval == 'daily':
+        try:
+            process_ema50_data_for(ticker, api_key, interval=interval, date=date)
+        except requests.exceptions.ConnectionError:
+            time.sleep(60)
+            process_ema50_data_for(ticker, api_key, interval=interval, date=date)
+
+
+    ## EMA-200 Data
+    if interval == 'daily':
+        try:
+            process_ema200_data_for(ticker, api_key, interval=interval, date=date)
+        except requests.exceptions.ConnectionError:
+            time.sleep(60)
+            process_ema200_data_for(ticker, api_key, interval=interval, date=date)
+
+
     ## RSI Data
     try:
         process_rsi_data_for(ticker, api_key, interval=interval, date=date)
     except requests.exceptions.ConnectionError:
         time.sleep(60)
         process_rsi_data_for(ticker, api_key, interval=interval, date=date)
-    ###### process_ema200_data_for(ticker, api_key, interval=interval, date=date)
+
 
     ###### Update DB Status
     # insert_status(ticker, interval=interval, date=datetime.datetime.now().strftime("%Y-%m-%d"))
@@ -374,7 +397,7 @@ def process_ema_data_for(ticker, api_key, ema_period, interval, date=None):
             except:
                 new_date = datetime.datetime.strptime(date, '%Y-%m-%d %H:%M:%S').date()
 
-            start_date = datetime.datetime.strptime('2015-12-31', '%Y-%m-%d').date()
+            start_date = datetime.datetime.strptime('2019-12-31', '%Y-%m-%d').date()
             if last_run == None:
                 last_run = start_date
 
@@ -398,4 +421,12 @@ def process_ema200_data_for(ticker, api_key, interval, date=None):
 
 def process_ema21_data_for(ticker, api_key, interval, date=None):
     process_ema_data_for(ticker, api_key, ema_period=21, interval=interval, date=date)
+
+
+def process_ema50_data_for(ticker, api_key, interval, date=None):
+    process_ema_data_for(ticker, api_key, ema_period=50, interval=interval, date=date)
+
+
+def process_ema200_data_for(ticker, api_key, interval, date=None):
+    process_ema_data_for(ticker, api_key, ema_period=200, interval=interval, date=date)
 

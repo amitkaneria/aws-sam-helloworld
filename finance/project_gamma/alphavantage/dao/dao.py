@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 import os
 load_dotenv()
 
-db_pwd = os.environ.get('db_pwd')
+db_pwd = os.environ.get('DB_PWD')
 
 def insert_daily_price_volume(ticker, date, interval, open, high, low, close, volume):
 
@@ -189,6 +189,9 @@ def update_daily_technicals_ema(ticker, date, interval, ema_key, ema_value):
         elif ema_key == 'ema21':
             sql = """UPDATE gamma.daily_data SET ema21=%s
                      WHERE ticker=%s AND date=%s ;"""
+        elif ema_key == 'ema50':
+            sql = """UPDATE gamma.daily_data SET ema50=%s
+                     WHERE ticker=%s AND date=%s ;"""
         elif ema_key == 'ema200':
             sql = """UPDATE gamma.daily_data SET ema200=%s
                      WHERE ticker=%s AND date=%s ;"""
@@ -204,9 +207,6 @@ def update_daily_technicals_ema(ticker, date, interval, ema_key, ema_value):
                      WHERE ticker=%s AND date=%s ;"""
         elif ema_key == 'ema21':
             sql = """UPDATE gamma.weekly_data SET ema21=%s
-                     WHERE ticker=%s AND date=%s ;"""
-        elif ema_key == 'ema200':
-            sql = """UPDATE gamma.weekly_data SET ema200=%s
                      WHERE ticker=%s AND date=%s ;"""
 
     conn = None
