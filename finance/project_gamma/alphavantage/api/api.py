@@ -13,6 +13,27 @@ load_dotenv()
 
 DAILY_DATA_COLLECTION_START_DATE = os.environ.get('WEEKLY_DATA_COLLECTION_START_DATE')
 WEEKLY_DATA_COLLECTION_START_DATE = os.environ.get('WEEKLY_DATA_COLLECTION_START_DATE')
+API_KEY = os.environ.get('ALPHAVANTAGE_API_KEY')
+
+
+def process_priority_for(interval, priority):
+    global ticker_list_db, ticker
+    ticker_list_db = get_tickers(interval=interval, last_run_date=None, priority=priority)
+    print(f"Priority: {priority}, Running {interval} for List:" + str(ticker_list_db))
+    for ticker in ticker_list_db:
+        print(str(datetime.datetime.now()) + ' : ##### ##### ' + ticker + ' ##### #####')
+        # process_data_for(ticker, api_key=API_KEY, interval='daily', date='2021-07-16')
+        # process_data_for(ticker, api_key=API_KEY, interval='weekly', date=None)
+        process_data_for(ticker, api_key=API_KEY, interval=interval, date=None)
+        print(str(datetime.datetime.now()) + ' : . . . sleeping')
+        time.sleep(30)
+    if len(ticker_list_db) > 0:
+        # Daily Analytics Run
+        generate_signal(interval='daily', start_date=str(previous_business_day(last_business_day(None))), end_date=None)
+    else:
+        print('NOTE: Analytics is not NOT for empty watch-list')
+    print('##### ##### ##### ##### #####')
+
 
 def process_data_for(ticker, api_key, interval, date):
 

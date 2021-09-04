@@ -47,6 +47,26 @@ def process_signals(start_date, end_date, method, buy_sell, interval='daily'):
                             DO NOTHING
                             ;"""
 
+    elif option == 'daily_buy_ema.50':
+        sql = """INSERT INTO gamma.daily_signals (ticker, date, buy_sell, method, note, reco_price)
+                            SELECT A.ticker, B.date, 'buy', 'EMA_50', 'EMA 50 crossing this day price for potential buy signal, please verify with other technicals and material news, ratings changes', B.close
+                            FROM gamma.daily_data A, gamma.daily_data B
+                            WHERE A.ticker = B.ticker AND A.date = %s AND B.date = %s
+                                AND A.close < A.ema50  AND B.close > B.ema50
+                            ON CONFLICT (ticker,date,method)
+                            DO NOTHING
+                            ;"""
+
+    elif option == 'daily_buy_ema.200':
+        sql = """INSERT INTO gamma.daily_signals (ticker, date, buy_sell, method, note, reco_price)
+                            SELECT A.ticker, B.date, 'buy', 'EMA_200', 'EMA 200 crossing this week price for potential buy signal, please verify with other technicals and material news, ratings changes', B.close
+                            FROM gamma.daily_data A, gamma.daily_data B
+                            WHERE A.ticker = B.ticker AND A.date = %s AND B.date = %s
+                                AND A.close < A.ema200  AND B.close > B.ema200
+                            ON CONFLICT (ticker,date,method)
+                            DO NOTHING
+                            ;"""
+
     elif option == 'daily_sell_ema.21':
         sql = """INSERT INTO gamma.daily_signals (ticker, date, buy_sell, method, note, reco_price)
                             SELECT A.ticker, B.date, 'sell', 'EMA_21', 'EMA 21 crossing this week price for potential sell signal, please verify with other technicals and material news, ratings changes', B.close

@@ -2,7 +2,7 @@ import time
 import datetime
 from finance.project_gamma.alphavantage.api.api import process_price_volume_data_for, process_stochastic_data_for, process_ema8_data_for, \
     process_ema12_data_for, process_ema21_data_for, process_rsi_data_for, process_intraday_price_volume_data_for, process_data_for, generate_signal,\
-    process_ema200_data_for, process_ema50_data_for
+    process_ema200_data_for, process_ema50_data_for, process_priority_for
 from finance.project_gamma.alphavantage.util.util import last_business_day, previous_business_day, next_business_day, \
     next_week_business_day, friday_before_previous_friday, previous_friday
 from finance.project_gamma.alphavantage.dao.dao import update_status, get_tickers
@@ -11,21 +11,7 @@ from dotenv import load_dotenv
 import os
 load_dotenv()
 
-# 1	"MAIN"
-# 2	"GROWTH"
-# 4	"MEME"
-# 6	"WEED"
-# 7	"BITCOIN"
-# 8	"CHINA"
-# 10	"PIG"
-# 11	"ARK"
-# 12	"FIN"
-# 13	"GIANTS"
-# "MEME"
-
 ticker_list_new     = ['SCHW', 'BNTX', 'CMG', 'JNJ', 'EFX', 'NVS', 'TXN', 'WHR']
-
-#7/14
 ticker_list_delta = ['UPST', 'HGV', 'APHA', 'FVRR', 'ADBE', 'AI']
 
 ################################################################################
@@ -40,92 +26,14 @@ print('##### ##### ##### ##### #####')
 if option == 1:
 
     interval = 'daily'
-    # ticker_list_db = get_tickers(interval=interval, last_run_date=None, priority=None)
-    # ticker_list_db = get_tickers(last_run_date=None, priority=None)
-    ticker_list_db = get_tickers(interval='daily', last_run_date=None, priority=0)
-    print("Priority: 0, Running Daily for List:" + str(ticker_list_db))
-    for ticker in ticker_list_db:
-        print(str(datetime.datetime.now()) + ' : ##### ##### '+ ticker + ' ##### #####')
-        # process_data_for(ticker, api_key=API_KEY, interval='daily', date='2021-07-16')
-        # process_data_for(ticker, api_key=API_KEY, interval='weekly', date=None)
-        process_data_for(ticker, api_key=API_KEY, interval=interval, date=None)
-        print(str(datetime.datetime.now()) + ' : . . . sleeping')
-        time.sleep(30)
-
-    if len(ticker_list_db) > 0:
-        # Daily Analytics Run
-        generate_signal(interval='daily', start_date=str(previous_business_day(last_business_day(None))), end_date=None)
-    else:
-        print('NOTE: Analytics is not NOT for empty watch-list')
-    print('##### ##### ##### ##### #####')
-
-    ticker_list_db = get_tickers(interval='daily', last_run_date=None, priority=1)
-    print("Priority: 1, Running Daily for List:" + str(ticker_list_db))
-    for ticker in ticker_list_db:
-        print(str(datetime.datetime.now()) + ' : ##### ##### '+ ticker + ' ##### #####')
-        # process_data_for(ticker, api_key=API_KEY, interval='daily', date='2021-07-16')
-        # process_data_for(ticker, api_key=API_KEY, interval='weekly', date=None)
-        process_data_for(ticker, api_key=API_KEY, interval=interval, date=None)
-        print(str(datetime.datetime.now()) + ' : . . . sleeping')
-        time.sleep(25)
-
-    if len(ticker_list_db) > 0:
-        # Daily Analytics Run
-        generate_signal(interval='daily', start_date=str(previous_business_day(last_business_day(None))), end_date=None)
-    else:
-        print('NOTE: Analytics is not NOT for empty watch-list')
-    print('##### ##### ##### ##### #####')
-
-    ticker_list_db = get_tickers(interval='daily', last_run_date=None, priority=2)
-    print("Priority: 2, Running Daily for List:" + str(ticker_list_db))
-    for ticker in ticker_list_db:
-        print(str(datetime.datetime.now()) + ' : ##### ##### '+ ticker + ' ##### #####')
-        # process_data_for(ticker, api_key=API_KEY, interval='daily', date='2021-07-16')
-        # process_data_for(ticker, api_key=API_KEY, interval='weekly', date=None)
-        process_data_for(ticker, api_key=API_KEY, interval=interval, date=None)
-        print(str(datetime.datetime.now()) + ' : . . . sleeping')
-        time.sleep(25)
-
-    if len(ticker_list_db) > 0:
-        # Daily Analytics Run
-        generate_signal(interval='daily', start_date=str(previous_business_day(last_business_day(None))), end_date=None)
-    else:
-        print('NOTE: Analytics is not NOT for empty watch-list')
-    print('##### ##### ##### ##### #####')
-
-    ticker_list_db = get_tickers(interval=interval, last_run_date=None, priority=None)
-    print("Priority: ALL, Running Daily for List:" + str(ticker_list_db))
-    for ticker in ticker_list_db:
-        print(str(datetime.datetime.now()) + ' : ##### ##### '+ ticker + ' ##### #####')
-        # process_data_for(ticker, api_key=API_KEY, interval='daily', date='2021-07-16')
-        # process_data_for(ticker, api_key=API_KEY, interval='weekly', date=None)
-        process_data_for(ticker, api_key=API_KEY, interval=interval, date=None)
-        print(str(datetime.datetime.now()) + ' : . . . sleeping')
-        time.sleep(25)
-
-    if len(ticker_list_db) > 0:
-        # Daily Analytics Run
-        generate_signal(interval='daily', start_date=str(previous_business_day(last_business_day(None))), end_date=None)
-    else:
-        print('NOTE: Analytics is not NOT for empty watch-list')
-    print('##### ##### ##### ##### #####')
-
-    ticker_list_db = get_tickers(interval='weekly', last_run_date=None, priority=None)
-    print("Running Weekly for List:" + str(ticker_list_db))
-    for ticker in ticker_list_db:
-        print(str(datetime.datetime.now()) + ' : ##### ##### '+ ticker + ' ##### #####')
-        # process_data_for(ticker, api_key=API_KEY, interval='daily', date='2021-07-16')
-        # process_data_for(ticker, api_key=API_KEY, interval='weekly', date=None)
-        process_data_for(ticker, api_key=API_KEY, interval='weekly', date=None)
-        print(str(datetime.datetime.now()) + ' : . . . sleeping')
-        time.sleep(25)
-
-    if len(ticker_list_db) > 0:
-        # Weekly Analytics Run
-        generate_signal(interval='weekly', start_date=friday_before_previous_friday(), end_date=previous_friday())
-    else:
-        print('NOTE: Analytics is NOT run for empty watch-list')
-    print('##### ##### ##### ##### #####')
+    process_priority_for(interval=interval, priority=0)
+    process_priority_for(interval=interval, priority=1)
+    process_priority_for(interval=interval, priority=2)
+    process_priority_for(interval=interval, priority=3)
+    process_priority_for(interval=interval, priority=None)
+    interval = 'weekly'
+    process_priority_for(interval=interval, priority=0)
+    process_priority_for(interval=interval, priority=None)
 
 ## Daily Analytics Run
 elif option == 2:
