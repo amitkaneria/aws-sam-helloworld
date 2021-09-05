@@ -1,11 +1,14 @@
 import requests
 import datetime
+# from datetime import datetime
 import time
-from finance.project_gamma.alphavantage.dao.dao import insert_daily_price_volume, update_daily_price_volume, update_daily_technicals_stochs, update_daily_technicals_ema, update_daily_technicals_rsi, get_status
+from datetime import date
+from finance.project_gamma.alphavantage.dao.dao import insert_daily_price_volume, update_daily_price_volume, update_daily_technicals_stochs, update_daily_technicals_ema, update_daily_technicals_rsi, get_status    \
+    ,insert_monthly_fundamentals
 from finance.project_gamma.alphavantage.util.util import is_valid_date
 from finance.project_gamma.alphavantage.util.util import last_business_day, previous_business_day, next_business_day, \
     next_week_business_day, friday_before_previous_friday, previous_friday
-from finance.project_gamma.alphavantage.dao.dao import update_status, get_tickers
+from finance.project_gamma.alphavantage.dao.dao import update_status, get_tickers, insert_monthly_fundamentals
 from finance.project_gamma.alphavantage.dao.data_analytics_dao import process_signals
 from dotenv import load_dotenv
 import os
@@ -14,6 +17,28 @@ load_dotenv()
 DAILY_DATA_COLLECTION_START_DATE = os.environ.get('WEEKLY_DATA_COLLECTION_START_DATE')
 WEEKLY_DATA_COLLECTION_START_DATE = os.environ.get('WEEKLY_DATA_COLLECTION_START_DATE')
 API_KEY = os.environ.get('ALPHAVANTAGE_API_KEY')
+
+
+def process_fundamentals_monthly_for(priority):
+    ticker_list_db = get_tickers(interval='monthly', last_run_date=None, priority=priority)
+    print("##### Running MONTHLY for Date: "+ datetime.datetime.now().strftime("%Y-%m-%d") + " for List: " str(ticker_list_db))
+    counter=0
+    for ticker in ticker_list_db:
+        counter = counter + 1
+        print("## Running Ticker: " + ticker )
+        process_fundamentals_for(ticker=ticker, api_key=API_KEY)
+        update_status(ticker, interval='monthly', date=datetime.datetime.now().strftime("%Y-%m-%d"))
+        if counter%5 == 0:
+            print(str(datetime.datetime.now()) + ' : . . . sleeping')
+            time.sleep(50)
+
+
+def process_daily_priority_for(priority):
+    process_priority_for(interval='daily', priority=priority)
+
+
+def process_weekly_priority_for(priority):
+    process_priority_for(interval='weekly', priority=priority)
 
 
 def process_priority_for(interval, priority):
@@ -460,6 +485,33 @@ def process_ema_data_for(ticker, api_key, ema_period, interval, date=None):
             else:
                 break
 
+
+def process_fundamentals_for(ticker, api_key):
+    url = 'https://www.alphavantage.co/query?function=OVERVIEW&symbol={0}&apikey={1}'.format(ticker, api_key)
+
+    try:
+        r = requests.get(url)
+    except requests.exceptions.ConnectionError:
+        time.sleep(60)
+        r = requests.get(url)
+
+    response_data = r.json()
+    if response_data:
+        data = {}
+        data['mcap'] = 0.0 if response_data['MarketCapitalization'] is None or response_data['MarketCapitalization'] == 'None' else response_data['MarketCapitalization']
+        data['pe'] = 0.0 if response_data['PERatio'] is None or response_data['PERatio'] == 'None' else response_data['PERatio']
+        data['pe_trailing'] = 0.0 if response_data['TrailingPE'] is None or response_data['TrailingPE'] == 'None' else response_data['TrailingPE']
+        data['pe_forward'] = 0.0 if response_data['ForwardPE'] is None or response_data['ForwardPE'] == 'None' else response_data['ForwardPE']
+        data['beta'] = 0.0 if response_data['Beta'] is None or response_data['Beta'] == 'None' else response_data['Beta']
+        data['eps'] = 0.0 if response_data['EPS'] is None or response_data['EPS'] == 'None' else response_data['EPS']
+        data['revenue'] = 0.0 if response_data['RevenueTTM'] is None or response_data['RevenueTTM'] == 'None' else response_data['RevenueTTM']
+        data['high52week'] = 0.0 if response_data['52WeekHigh'] is None or response_data['52WeekHigh'] == 'None' else response_data['52WeekHigh']
+        data['low52week'] = 0.0 if response_data['52WeekLow'] is None or response_data['52WeekLow'] == 'None' else response_data['52WeekLow']
+        data['sma50'] = 0.0 if response_data['50DayMovingAverage'] is None or response_data['50DayMovingAverage'] == 'None' else response_data['50DayMovingAverage']
+        data['sma200'] = 0.0 if response_data['200DayMovingAverage'] is None or response_data['200DayMovingAverage'] == 'None' else response_data['200DayMovingAverage']
+        # cur.execute(sql, (ticker,date, data['mcap'], data['pe'], data['pe_forward'], data['pe_trailing'], data['revenue'], data['eps'], data['beta'], data['high52week'], data['low52week']))
+        # print(str(data))
+        insert_monthly_fundamentals(ticker=ticker, date=datetime.date.today().strftime('%Y-%m-%d'), data=data)
 
 def process_ema8_data_for(ticker, api_key, interval, date=None):
     process_ema_data_for(ticker, api_key, ema_period=8, interval=interval, date=date)

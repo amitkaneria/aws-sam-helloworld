@@ -2,7 +2,8 @@ import time
 import datetime
 from finance.project_gamma.alphavantage.api.api import process_price_volume_data_for, process_stochastic_data_for, process_ema8_data_for, \
     process_ema12_data_for, process_ema21_data_for, process_rsi_data_for, process_intraday_price_volume_data_for, process_data_for, generate_signal,\
-    process_ema200_data_for, process_ema50_data_for, process_priority_for
+    process_ema200_data_for, process_ema50_data_for, process_priority_for, process_daily_priority_for, process_weekly_priority_for, \
+    process_fundamentals_monthly_for
 from finance.project_gamma.alphavantage.util.util import last_business_day, previous_business_day, next_business_day, \
     next_week_business_day, friday_before_previous_friday, previous_friday
 from finance.project_gamma.alphavantage.dao.dao import update_status, get_tickers
@@ -17,7 +18,7 @@ ticker_list_delta = ['UPST', 'HGV', 'APHA', 'FVRR', 'ADBE', 'AI']
 ################################################################################
 API_KEY = os.environ.get('ALPHAVANTAGE_API_KEY')
 
-option=1
+option=7
 print('Select Options below:' + str(option))
 print('##### ##### ##### ##### #####')
 
@@ -25,15 +26,21 @@ print('##### ##### ##### ##### #####')
 ## This updates all data for today's date (or any missing date data)
 if option == 1:
 
-    interval = 'daily'
-    process_priority_for(interval=interval, priority=0)
-    process_priority_for(interval=interval, priority=1)
-    process_priority_for(interval=interval, priority=2)
-    process_priority_for(interval=interval, priority=3)
-    process_priority_for(interval=interval, priority=None)
-    interval = 'weekly'
-    process_priority_for(interval=interval, priority=0)
-    process_priority_for(interval=interval, priority=None)
+    ## Daily
+    process_daily_priority_for(priority=0)
+    process_daily_priority_for(priority=1)
+    process_daily_priority_for(priority=2)
+    process_daily_priority_for(priority=3)
+    process_daily_priority_for(priority=None)
+
+    ## Weekly
+    process_weekly_priority_for(priority=0)
+    process_weekly_priority_for(priority=None)
+
+    ## Monthly
+    todayDate = datetime.date.today()
+    if todayDate.day < 6:
+        process_fundamentals_monthly_for(priority=None)
 
 ## Daily Analytics Run
 elif option == 2:
@@ -74,6 +81,8 @@ elif option == 6:
         print('NOTE: Analytics is not NOT for empty watch-list')
     print('##### ##### ##### ##### #####')
 
+elif option == 7:
+    process_fundamentals_monthly_for(priority=None)
 
 else:
     print('Please select correct options: 1, 2, 3, 4, 5')

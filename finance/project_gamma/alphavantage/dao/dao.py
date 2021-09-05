@@ -109,6 +109,36 @@ def insert_daily_technicals_stochs(ticker, date, interval, stochs_slowk, stochs_
             conn.close()
 
 
+def insert_monthly_fundamentals(ticker, date, data):
+
+    sql = """INSERT INTO gamma.fundamentals_monthly (ticker, date, mcap, pe, pe_forward, pe_trailing, revenue, eps, beta, high52week, low52week)
+                 VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) ;"""
+
+
+    conn = None
+    try:
+        # read database configuration
+        # params = config()
+        # connect to the PostgreSQL database
+        conn = psycopg2.connect(
+            # **params
+            database="Gamma", user='postgres', password=db_pwd, host='wallstdata.ctgi8zbyshxe.us-east-1.rds.amazonaws.com', port= '5432'
+        )
+        # create a new cursor
+        cur = conn.cursor()
+        # execute the INSERT statement
+        cur.execute(sql, (ticker,date, data['mcap'], data['pe'], data['pe_forward'], data['pe_trailing'], data['revenue'], data['eps'], data['beta'], data['high52week'], data['low52week']))
+        # commit the changes to the database
+        conn.commit()
+        # close communication with the database
+        cur.close()
+    except (Exception, psycopg2.DatabaseError) as error:
+        print(error)
+    finally:
+        if conn is not None:
+            conn.close()
+
+
 def update_daily_technicals_stochs(ticker, date, interval, stochs_slowk, stochs_slowd, stochs_delta):
 
     if interval == 'daily':
@@ -247,18 +277,22 @@ def get_tickers(interval, last_run_date, priority=None):
 
     if priority == None:
         if interval == 'daily':
-            sql = """select ticker from gamma.watchlist where daily_last_run_date < %s order by priority ;"""
+            sql = """select ticker from gamma.watchlist where (daily_last_run_date is null OR daily_last_run_date < %s) order by priority ;"""
         elif interval == 'weekly':
-            sql = """select ticker from gamma.watchlist where weekly_last_run_date < %s order by priority ;"""
+            sql = """select ticker from gamma.watchlist where (weekly_last_run_date is null OR weekly_last_run_date < %s) order by priority ;"""
         elif interval == '60min':
-            sql = """select ticker from gamma.watchlist where hourly_last_run_date < %s order by priority ;"""
+            sql = """select ticker from gamma.watchlist where (hourly_last_run_date is null OR hourly_last_run_date < %s) order by priority ;"""
+        elif interval == 'monthly':
+            sql = """select ticker from gamma.watchlist where (monthly_last_run_date is null or monthly_last_run_date < (NOW() - INTERVAL '25 DAY')) order by priority;"""
     else:
         if interval == 'daily':
-            sql = """select ticker from gamma.watchlist where daily_last_run_date < %s AND priority = %s order by priority ;"""
+            sql = """select ticker from gamma.watchlist where (daily_last_run_date is null OR daily_last_run_date < %s) AND priority = %s order by priority ;"""
         elif interval == 'weekly':
-            sql = """select ticker from gamma.watchlist where weekly_last_run_date < %s AND priority = %s order by priority ;"""
+            sql = """select ticker from gamma.watchlist where (weekly_last_run_date is null OR weekly_last_run_date < %s) AND priority = %s order by priority ;"""
         elif interval == '60min':
-            sql = """select ticker from gamma.watchlist where hourly_last_run_date < %s AND priority = %s order by priority ;"""
+            sql = """select ticker from gamma.watchlist where (hourly_last_run_date is null OR hourly_last_run_date < %s) AND priority = %s order by priority ;"""
+        elif interval == 'monthly':
+            sql = """select ticker from gamma.watchlist where (monthly_last_run_date is null or monthly_last_run_date < (NOW() - INTERVAL '25 DAY')) AND priority = %s order by priority;"""
 
     conn = None
     try:
@@ -271,9 +305,23 @@ def get_tickers(interval, last_run_date, priority=None):
         )
         cur = conn.cursor()
         if priority == None:
-            cur.execute(sql, (last_run_date,))
+            if interval == 'daily':
+                cur.execute(sql, (last_run_date,))
+            elif interval == 'weekly':
+                cur.execute(sql, (last_run_date,))
+            elif interval == '60min':
+                cur.execute(sql, (last_run_date,))
+            elif interval == 'monthly':
+                cur.execute(sql, ())
         else:
-            cur.execute(sql, (last_run_date, priority))
+            if interval == 'daily':
+                cur.execute(sql, (last_run_date, priority))
+            elif interval == 'weekly':
+                cur.execute(sql, (last_run_date, priority))
+            elif interval == '60min':
+                cur.execute(sql, (last_run_date, priority))
+            elif interval == 'monthly':
+                cur.execute(sql, (priority,))
         ticker_list = []
         rows = cur.fetchall()
         for row in rows:
@@ -375,6 +423,9 @@ def update_status(ticker, date, interval):
                      WHERE ticker=%s;"""
     elif interval == 'hourly':
         sql = """UPDATE gamma.watchlist SET hourly_last_run_date=%s
+                     WHERE ticker=%s;"""
+    elif interval == 'monthly':
+        sql = """UPDATE gamma.watchlist SET monthly_last_run_date=%s
                      WHERE ticker=%s;"""
 
     conn = None
