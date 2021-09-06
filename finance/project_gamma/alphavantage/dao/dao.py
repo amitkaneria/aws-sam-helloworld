@@ -111,7 +111,7 @@ def insert_daily_technicals_stochs(ticker, date, interval, stochs_slowk, stochs_
 
 def insert_monthly_fundamentals(ticker, date, data):
 
-    sql = """INSERT INTO gamma.fundamentals_monthly (ticker, date, mcap, pe, pe_forward, pe_trailing, revenue, eps, beta, high52week, low52week)
+    sql = """INSERT INTO gamma.fundamentals (ticker, date, mcap, pe, pe_forward, pe_trailing, revenue, eps, beta, high52week, low52week)
                  VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) ;"""
 
 

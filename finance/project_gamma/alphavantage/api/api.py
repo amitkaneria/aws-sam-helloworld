@@ -19,20 +19,6 @@ WEEKLY_DATA_COLLECTION_START_DATE = os.environ.get('WEEKLY_DATA_COLLECTION_START
 API_KEY = os.environ.get('ALPHAVANTAGE_API_KEY')
 
 
-def process_fundamentals_monthly_for(priority):
-    ticker_list_db = get_tickers(interval='monthly', last_run_date=None, priority=priority)
-    print("##### Running MONTHLY for Date: "+ datetime.datetime.now().strftime("%Y-%m-%d") + " for List: " str(ticker_list_db))
-    counter=0
-    for ticker in ticker_list_db:
-        counter = counter + 1
-        print("## Running Ticker: " + ticker )
-        process_fundamentals_for(ticker=ticker, api_key=API_KEY)
-        update_status(ticker, interval='monthly', date=datetime.datetime.now().strftime("%Y-%m-%d"))
-        if counter%5 == 0:
-            print(str(datetime.datetime.now()) + ' : . . . sleeping')
-            time.sleep(50)
-
-
 def process_daily_priority_for(priority):
     process_priority_for(interval='daily', priority=priority)
 
@@ -138,6 +124,14 @@ def process_data_for(ticker, api_key, interval, date):
     except requests.exceptions.ConnectionError:
         time.sleep(60)
         process_rsi_data_for(ticker, api_key, interval=interval, date=date)
+
+
+    ## Process fundamentals
+    try:
+        process_fundamentals_for(ticker=ticker, api_key=API_KEY)
+    except requests.exceptions.ConnectionError:
+        time.sleep(60)
+        process_fundamentals_for(ticker=ticker, api_key=API_KEY)
 
 
     ###### Update DB Status
@@ -489,6 +483,7 @@ def process_ema_data_for(ticker, api_key, ema_period, interval, date=None):
 def process_fundamentals_for(ticker, api_key):
     url = 'https://www.alphavantage.co/query?function=OVERVIEW&symbol={0}&apikey={1}'.format(ticker, api_key)
 
+    print(str(datetime.datetime.now()) + ' : . Fundamentals')
     try:
         r = requests.get(url)
     except requests.exceptions.ConnectionError:
