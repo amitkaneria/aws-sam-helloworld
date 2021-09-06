@@ -4,7 +4,11 @@ from dotenv import load_dotenv
 import os
 load_dotenv()
 
-db_pwd = os.environ.get('DB_PWD')
+postgres_db_server      = os.environ.get('POSTGRES.DB.SERVER')
+postgres_db_port        = os.environ.get('POSTGRES.DB.PORT')
+postgres_db_user        = os.environ.get('POSTGRES.DB.USER')
+postgres_db_password    = os.environ.get('POSTGRES.DB.PASSWORD')
+postgres_db_database    = os.environ.get('POSTGRES.DB.DATABASE')
 
 def insert_daily_price_volume(ticker, date, interval, open, high, low, close, volume):
 
@@ -25,7 +29,7 @@ def insert_daily_price_volume(ticker, date, interval, open, high, low, close, vo
         # connect to the PostgreSQL database
         conn = psycopg2.connect(
             # **params
-            database="Gamma", user='postgres', password=db_pwd, host='wallstdata.ctgi8zbyshxe.us-east-1.rds.amazonaws.com', port= '5432'
+            database=postgres_db_database, user=postgres_db_user, password=postgres_db_password, host=postgres_db_server, port=postgres_db_port
         )
         # create a new cursor
         cur = conn.cursor()
@@ -59,7 +63,7 @@ def update_daily_price_volume(ticker, date, interval, open, high, low, close, vo
         # connect to the PostgreSQL database
         conn = psycopg2.connect(
             # **params
-            database="Gamma", user='postgres', password=db_pwd, host='wallstdata.ctgi8zbyshxe.us-east-1.rds.amazonaws.com', port= '5432'
+            database=postgres_db_database, user=postgres_db_user, password=postgres_db_password, host=postgres_db_server, port=postgres_db_port
         )
         # create a new cursor
         cur = conn.cursor()
@@ -92,7 +96,7 @@ def insert_daily_technicals_stochs(ticker, date, interval, stochs_slowk, stochs_
         # connect to the PostgreSQL database
         conn = psycopg2.connect(
             # **params
-            database="Gamma", user='postgres', password=db_pwd, host='wallstdata.ctgi8zbyshxe.us-east-1.rds.amazonaws.com', port= '5432'
+            database=postgres_db_database, user=postgres_db_user, password=postgres_db_password, host=postgres_db_server, port=postgres_db_port
         )
         # create a new cursor
         cur = conn.cursor()
@@ -122,7 +126,7 @@ def insert_monthly_fundamentals(ticker, date, data):
         # connect to the PostgreSQL database
         conn = psycopg2.connect(
             # **params
-            database="Gamma", user='postgres', password=db_pwd, host='wallstdata.ctgi8zbyshxe.us-east-1.rds.amazonaws.com', port= '5432'
+            database=postgres_db_database, user=postgres_db_user, password=postgres_db_password, host=postgres_db_server, port=postgres_db_port
         )
         # create a new cursor
         cur = conn.cursor()
@@ -155,7 +159,7 @@ def update_daily_technicals_stochs(ticker, date, interval, stochs_slowk, stochs_
         # connect to the PostgreSQL database
         conn = psycopg2.connect(
             # **params
-            database="Gamma", user='postgres', password=db_pwd, host='wallstdata.ctgi8zbyshxe.us-east-1.rds.amazonaws.com', port= '5432'
+            database=postgres_db_database, user=postgres_db_user, password=postgres_db_password, host=postgres_db_server, port=postgres_db_port
         )
         # create a new cursor
         cur = conn.cursor()
@@ -187,7 +191,7 @@ def update_daily_technicals_rsi(ticker, date, interval, rsi_value):
         # connect to the PostgreSQL database
         conn = psycopg2.connect(
             # **params
-            database="Gamma", user='postgres', password=db_pwd, host='wallstdata.ctgi8zbyshxe.us-east-1.rds.amazonaws.com', port= '5432'
+            database=postgres_db_database, user=postgres_db_user, password=postgres_db_password, host=postgres_db_server, port=postgres_db_port
         )
         # create a new cursor
         cur = conn.cursor()
@@ -246,7 +250,7 @@ def update_daily_technicals_ema(ticker, date, interval, ema_key, ema_value):
         # connect to the PostgreSQL database
         conn = psycopg2.connect(
             # **params
-            database="Gamma", user='postgres', password=db_pwd, host='wallstdata.ctgi8zbyshxe.us-east-1.rds.amazonaws.com', port= '5432'
+            database=postgres_db_database, user=postgres_db_user, password=postgres_db_password, host=postgres_db_server, port=postgres_db_port
         )
         # create a new cursor
         cur = conn.cursor()
@@ -301,7 +305,7 @@ def get_tickers(interval, last_run_date, priority=None):
         # connect to the PostgreSQL database
         conn = psycopg2.connect(
             # **params
-            database="Gamma", user='postgres', password=db_pwd, host='wallstdata.ctgi8zbyshxe.us-east-1.rds.amazonaws.com', port= '5432'
+            database=postgres_db_database, user=postgres_db_user, password=postgres_db_password, host=postgres_db_server, port=postgres_db_port
         )
         cur = conn.cursor()
         if priority == None:
@@ -355,7 +359,7 @@ def get_status(ticker, interval):
         # connect to the PostgreSQL database
         conn = psycopg2.connect(
             # **params
-            database="Gamma", user='postgres', password=db_pwd, host='wallstdata.ctgi8zbyshxe.us-east-1.rds.amazonaws.com', port= '5432'
+            database=postgres_db_database, user=postgres_db_user, password=postgres_db_password, host=postgres_db_server, port=postgres_db_port
         )
         # create a new cursor
         cur = conn.cursor()
@@ -395,7 +399,7 @@ def insert_status(ticker, date, interval):
         # connect to the PostgreSQL database
         conn = psycopg2.connect(
             # **params
-            database="Gamma", user='postgres', password=db_pwd, host='wallstdata.ctgi8zbyshxe.us-east-1.rds.amazonaws.com', port= '5432'
+            database=postgres_db_database, user=postgres_db_user, password=postgres_db_password, host=postgres_db_server, port=postgres_db_port
         )
         # create a new cursor
         cur = conn.cursor()
@@ -435,7 +439,7 @@ def update_status(ticker, date, interval):
         # connect to the PostgreSQL database
         conn = psycopg2.connect(
             # **params
-            database="Gamma", user='postgres', password=db_pwd, host='wallstdata.ctgi8zbyshxe.us-east-1.rds.amazonaws.com', port= '5432'
+            database=postgres_db_database, user=postgres_db_user, password=postgres_db_password, host=postgres_db_server, port=postgres_db_port
         )
         # create a new cursor
         cur = conn.cursor()

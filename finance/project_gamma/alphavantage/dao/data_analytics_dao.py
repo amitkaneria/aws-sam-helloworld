@@ -4,7 +4,11 @@ from dotenv import load_dotenv
 import os
 load_dotenv()
 
-db_pwd = os.environ.get('DB_PWD')
+postgres_db_server      = os.environ.get('POSTGRES.DB.SERVER')
+postgres_db_port        = os.environ.get('POSTGRES.DB.PORT')
+postgres_db_user        = os.environ.get('POSTGRES.DB.USER')
+postgres_db_password    = os.environ.get('POSTGRES.DB.PASSWORD')
+postgres_db_database    = os.environ.get('POSTGRES.DB.DATABASE')
 
 
 def process_signals(start_date, end_date, method, buy_sell, interval='daily'):
@@ -209,7 +213,7 @@ def process_signals(start_date, end_date, method, buy_sell, interval='daily'):
         # connect to the PostgreSQL database
         conn = psycopg2.connect(
             # **params
-            database="Gamma", user='postgres', password=db_pwd, host='wallstdata.ctgi8zbyshxe.us-east-1.rds.amazonaws.com', port= '5432'
+            database=postgres_db_database, user=postgres_db_user, password=postgres_db_password, host=postgres_db_server, port=postgres_db_port
         )
         # create a new cursor
         cur = conn.cursor()

@@ -127,11 +127,12 @@ def process_data_for(ticker, api_key, interval, date):
 
 
     ## Process fundamentals
-    try:
-        process_fundamentals_for(ticker=ticker, api_key=API_KEY)
-    except requests.exceptions.ConnectionError:
-        time.sleep(60)
-        process_fundamentals_for(ticker=ticker, api_key=API_KEY)
+    if interval == 'weekly':
+        try:
+            process_fundamentals_for(ticker=ticker, api_key=API_KEY)
+        except requests.exceptions.ConnectionError:
+            time.sleep(60)
+            process_fundamentals_for(ticker=ticker, api_key=API_KEY)
 
 
     ###### Update DB Status
