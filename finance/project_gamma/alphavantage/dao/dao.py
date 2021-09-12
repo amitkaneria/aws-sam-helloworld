@@ -242,6 +242,12 @@ def update_daily_technicals_ema(ticker, date, interval, ema_key, ema_value):
         elif ema_key == 'ema21':
             sql = """UPDATE gamma.weekly_data SET ema21=%s
                      WHERE ticker=%s AND date=%s ;"""
+        elif ema_key == 'ema50':
+            sql = """UPDATE gamma.weekly_data SET ema50=%s
+                     WHERE ticker=%s AND date=%s ;"""
+        elif ema_key == 'ema200':
+            sql = """UPDATE gamma.weekly_data SET ema200=%s
+                     WHERE ticker=%s AND date=%s ;"""
 
     conn = None
     try:

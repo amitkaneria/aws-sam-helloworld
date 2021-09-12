@@ -5,7 +5,7 @@ import time
 from datetime import date
 from finance.project_gamma.alphavantage.dao.dao import insert_daily_price_volume, update_daily_price_volume, update_daily_technicals_stochs, update_daily_technicals_ema, update_daily_technicals_rsi, get_status    \
     ,insert_monthly_fundamentals
-from finance.project_gamma.alphavantage.util.util import is_valid_date
+from finance.project_gamma.alphavantage.util.util import is_valid_date, this_or_previous_friday
 from finance.project_gamma.alphavantage.util.util import last_business_day, previous_business_day, next_business_day, \
     next_week_business_day, friday_before_previous_friday, previous_friday
 from finance.project_gamma.alphavantage.dao.dao import update_status, get_tickers, insert_monthly_fundamentals
@@ -40,7 +40,7 @@ def process_priority_for(interval, priority):
         time.sleep(30)
     if len(ticker_list_db) > 0:
         # Daily Analytics Run
-        generate_signal(interval='daily', start_date=str(previous_business_day(last_business_day(None))), end_date=None)
+        generate_signal(interval=interval, start_date=str(previous_business_day(last_business_day(None))), end_date=None)
     else:
         print('NOTE: Analytics is not NOT for empty watch-list')
     print('##### ##### ##### ##### #####')
@@ -101,21 +101,19 @@ def process_data_for(ticker, api_key, interval, date):
 
 
     ## EMA-50 Data
-    if interval == 'daily':
-        try:
-            process_ema50_data_for(ticker, api_key, interval=interval, date=date)
-        except requests.exceptions.ConnectionError:
-            time.sleep(60)
-            process_ema50_data_for(ticker, api_key, interval=interval, date=date)
+    try:
+        process_ema50_data_for(ticker, api_key, interval=interval, date=date)
+    except requests.exceptions.ConnectionError:
+        time.sleep(60)
+        process_ema50_data_for(ticker, api_key, interval=interval, date=date)
 
 
     ## EMA-200 Data
-    if interval == 'daily':
-        try:
-            process_ema200_data_for(ticker, api_key, interval=interval, date=date)
-        except requests.exceptions.ConnectionError:
-            time.sleep(60)
-            process_ema200_data_for(ticker, api_key, interval=interval, date=date)
+    try:
+        process_ema200_data_for(ticker, api_key, interval=interval, date=date)
+    except requests.exceptions.ConnectionError:
+        time.sleep(60)
+        process_ema200_data_for(ticker, api_key, interval=interval, date=date)
 
 
     ## RSI Data
@@ -507,7 +505,7 @@ def process_fundamentals_for(ticker, api_key):
         data['sma200'] = 0.0 if response_data['200DayMovingAverage'] is None or response_data['200DayMovingAverage'] == 'None' else response_data['200DayMovingAverage']
         # cur.execute(sql, (ticker,date, data['mcap'], data['pe'], data['pe_forward'], data['pe_trailing'], data['revenue'], data['eps'], data['beta'], data['high52week'], data['low52week']))
         # print(str(data))
-        insert_monthly_fundamentals(ticker=ticker, date=datetime.date.today().strftime('%Y-%m-%d'), data=data)
+        insert_monthly_fundamentals(ticker=ticker, date=this_or_previous_friday(), data=data)
 
 def process_ema8_data_for(ticker, api_key, interval, date=None):
     process_ema_data_for(ticker, api_key, ema_period=8, interval=interval, date=date)

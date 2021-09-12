@@ -104,6 +104,30 @@ def previous_friday(input_date=None):
     return last_friday
 
 
+def this_or_previous_friday(input_date=None):
+
+    if input_date == None:
+        current_time = datetime.date.today()
+    else:
+        current_time = datetime.datetime.strptime(str(input_date), '%Y-%m-%d').date()
+
+    ## Does Last Friday fall in this week ??
+    if current_time.weekday() == 4:
+        last_friday = current_time;
+
+    elif current_time.weekday() > 4:
+        last_friday = (datetime.datetime.strptime(str(current_time), '%Y-%m-%d').date()
+                       - datetime.timedelta(days=current_time.weekday() - 4))
+
+    ## Or if Friday falls in the week before ??
+    else:
+        last_friday = (datetime.datetime.strptime(str(current_time), '%Y-%m-%d').date()
+                       - datetime.timedelta(days=current_time.weekday())
+                       + datetime.timedelta(days=4, weeks=-1))
+
+    return last_friday
+
+
 def friday_before_previous_friday(input_date=None):
 
     if input_date == None:
@@ -145,6 +169,9 @@ def friday_before_previous_friday(input_date=None):
 # print(previous_business_day(last_business_day(None)))
 #
 #
+# print(this_or_previous_friday())
+# print(this_or_previous_friday(input_date='2021-09-03'))
+# print(this_or_previous_friday(input_date='2021-09-02'))
 # print(previous_friday())
 # print(previous_friday(input_date='2021-07-23'))
 # print(previous_friday(input_date='2021-07-22'))
